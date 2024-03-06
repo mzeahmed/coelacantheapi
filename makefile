@@ -5,29 +5,34 @@ BLUE=\033[0;34m
 NO_COLOR=\033[0m
 
 u: ## Update dependencies
-	@echo "$(GREEN)Update dependencies$(NO_COLOR)"
+	@echo "$(GREEN)Updating dependencies$(NO_COLOR)"
 	@composer update
 	@echo "$(GREEN)Update dependencies done$(NO_COLOR)"
 
+du: ## Dump autoload
+	@echo "$(GREEN)Dumping autoload$(NO_COLOR)"
+	@composer dump-autoload
+	@echo "$(GREEN)Autoload dumped$(NO_COLOR)"
+
 start: ## Start the server
-	@echo "$(GREEN)Start the server$(NO_COLOR)"
+	@echo "$(GREEN)Starting the server$(NO_COLOR)"
 	ddev start
 	@echo "$(GREEN)Server started$(NO_COLOR)"
 
 stop: ## Stop the server
-	@echo "$(RED)Stop the server$(NO_COLOR)"
+	@echo "$(RED)Stopping the server$(NO_COLOR)"
 	ddev stop
 	@echo "$(RED)Server stopped$(NO_COLOR)"
 
 restart: ## Restart the server
-	@echo "$(YELLOW)Restart the server$(NO_COLOR)"
+	@echo "$(YELLOW)Restarting the server$(NO_COLOR)"
 	ddev restart
 	@echo "$(YELLOW)Server restarted$(NO_COLOR)"
 
 delete: ## Delete the server
-	@echo "$(RED)Delete the server$(NO_COLOR)"
+	@echo "$(RED)Destroying the server$(NO_COLOR)"
 	ddev delete
-	@echo "$(RED)Server deleted$(NO_COLOR)"
+	@echo "$(RED)Server destroyed$(NO_COLOR)"
 
 ssh: ## SSH connection to the server
 	@echo "$(BLUE)SSH connection to the server$(NO_COLOR)"
