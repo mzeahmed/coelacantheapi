@@ -4,14 +4,14 @@ namespace App\Contracts;
 
 interface RepositoryInterface {
     /**
-     * Detch one record from the database
+     * Fetch one record from the database
      *
      * @param int $id The record ID
      * @param array $columns The columns to fetch
      *
-     * @return object|null The record or null
+     * @return array|null The record or null
      */
-    public function find(int $id, array $columns): ?object;
+    public function find(int $id, array $columns): ?array;
 
     /**
      * Fetch one record by a given column from the database
@@ -37,9 +37,9 @@ interface RepositoryInterface {
      *        );
      * @param string $mainTableAlias The main table alias
      *
-     * @return object|null The record or null
+     * @return array|null The record or null
      */
-    public function findOneBy(array $where, array $columns = ['*'], array $joinArgs = [], string $mainTableAlias = ''): ?object;
+    public function findOneBy(array $where, array $columns = ['*'], array $joinArgs = [], string $mainTableAlias = ''): ?array;
 
     /**
      * Fetch all records from the database
@@ -90,21 +90,21 @@ interface RepositoryInterface {
     /**
      * Create a new record in the database
      *
-     * @param array $args The record arguments
+     * @param array $data The record arguments
      *
      * @return int|bool The new record ID or false
      */
-    public function create(array $args): int|bool;
+    public function create(array $data): int|bool;
 
     /**
      * Update a record in the database
      *
-     * @param array $args The record arguments
+     * @param array $data The record arguments
      * @param array $where The where clause
      *
      * @return int|bool The number of affected rows or false
      */
-    public function update(array $args, array $where): int|bool;
+    public function update(array $data, array $where): int|bool;
 
     /**
      * Delete a record from the database
