@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\System\DatabaseConnector;
+use App\Database\DBConnector;
 
 class Bootstrap {
     private static ?self $instance = null;
@@ -22,10 +22,9 @@ class Bootstrap {
     }
 
     public function init(): void {
+        require_once dirname(__DIR__) . '/config/config.php';
+
         $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__DIR__));
         $dotenv->load();
-
-        $database = new DatabaseConnector();
-        $database->getDbconnection();
     }
 }
