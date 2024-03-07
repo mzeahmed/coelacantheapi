@@ -96,6 +96,87 @@ abstract class AbstractRepository implements RepositoryInterface {
     }
 
     /**
+     * @inheritDoc
+     */
+    public function bulkInsert(array $rows): bool {
+        if (empty($rows)) {
+            return false;
+        }
+
+        $bulkData = $this->prepareBulkData($rows);
+        $query = "
+            INSERT INTO {$this->tableName} (" . implode(',', $bulkData['columns']) . ") 
+            VALUES " . implode(',', $bulkData['placeholders']);
+
+        return $this->db->execute($query, $bulkData['values']);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function bulkUpdate(string $column, array $rows): bool {
+        if (empty($rows)) {
+            return false;
+        }
+
+        $bulkData = $this->prepareBulkData($rows);
+        $query = "UPDATE {$this->tableName} SET {$column} = CASE id ";
+
+        $ids = array_column($rows, 'id');
+        $placeholders = array_fill(0, count($ids), '?');
+        $query .= implode(' ', $placeholders);
+        $query .= " END WHERE id IN (" . implode(',', $ids) . ")";
+
+        return $this->db->execute($query, $bulkData['values']);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function bulkDelete(string $column, array $values): bool {
+        if (empty($values)) {
+            return false;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($values), '?'));
+        $query = "DELETE FROM {$this->tableName} WHERE {$column} IN ({$placeholders})";
+
+        return $this->db->execute($query, $values);
+    }
+
+    /**
+     * Prepare the data for bulk insert
+     *
+     * This method construct columns, placeholders and values for bulk insert from the given rows
+     *
+     * @param array $rows The records to insert
+     *
+     * @return array The prepared data for bulk insert
+     */
+    private function prepareBulkData(array $rows): array {
+        $firstRow = current($rows);
+        $columns = array_keys($firstRow);
+        $placeholders = array_fill(
+            0,
+            count($rows),
+            '(' . implode(',', array_fill(0, count($columns), '%s')) . ')'
+        );
+        $values = [];
+
+        foreach ($rows as $row) {
+            foreach ($columns as $column) {
+                $values[] = $row[$column];
+            }
+        }
+
+        return [
+            'columns' => $columns,
+            'placeholders' => $placeholders,
+            'values' => $values,
+        ];
+    }
+
+    /**
      * Prepare one SELECT query by the given parameters
      *
      * @param array $where Where clause to filter results

@@ -86,7 +86,7 @@ class Database {
      *
      * @return int|bool
      */
-    public function update(string $tableName, array $data, array $where):int| bool {
+    public function update(string $tableName, array $data, array $where): int|bool {
         $set = implode(',', array_map(static function ($value, $key) {
             return "{$key} = " . (is_string($value) ? "'{$value}'" : (int) $value);
         }, $data, array_keys($data)));
@@ -117,7 +117,7 @@ class Database {
      *
      * @return bool
      */
-    public function delete(string$tableName,array$where): bool {
+    public function delete(string $tableName, array $where): bool {
         $whereClause = implode(' AND ', array_map(static function ($value, $key) {
             return "{$key} = " . (is_string($value) ? "'{$value}'" : (int) $value);
         }, $where, array_keys($where)));
@@ -139,6 +139,48 @@ class Database {
      */
     public function lastInsertId(): int {
         return (int) $this->getPDO()?->lastInsertId();
+    }
+
+    /**
+     * Execute a query
+     *
+     * @param string $query The query to execute
+     * @param array $params The parameters to bind
+     *
+     * @return bool
+     */
+    public function execute(string $query, array $params = []): bool {
+        $stmt = $this->getPDO()?->prepare($query);
+        $stmt->execute($params);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    /**
+     * Start a transaction
+     *
+     * @return void
+     */
+    public function startTransaction(): void {
+        $this->getPDO()?->beginTransaction();
+    }
+
+    /**
+     * Commit a transaction
+     *
+     * @return void
+     */
+    public function commitTransaction(): void {
+        $this->getPDO()?->commit();
+    }
+
+    /**
+     * Rollback a transaction
+     *
+     * @return void
+     */
+    public function rollbackTransaction(): void {
+        $this->getPDO()?->rollBack();
     }
 
     /**

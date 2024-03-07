@@ -114,4 +114,55 @@ interface RepositoryInterface {
      * @return bool
      */
     public function delete(array $where): bool;
+
+    /**
+     * Insert multiple records in the database
+     *
+     * @param array $rows The records to insert
+     *
+     * @return bool True if the records were inserted, false otherwise
+     */
+    public function bulkInsert(array $rows): bool;
+
+    /**
+     * Update multiple records in the database
+     *
+     * @param string $column The column to update
+     * @param array $rows The records to update
+     *
+     * @return bool True if the records were updated, false otherwise
+     */
+    public function bulkUpdate(string $column, array $rows): bool;
+
+    /**
+     * Delete multiple records from the database
+     *
+     * @param string $column The column to delete
+     * @param array $values The values to delete
+     *
+     * @return bool
+     */
+    public function bulkDelete(string $column, array $values): bool;
+
+
+    /**
+     * Start a transaction
+     *
+     * @return void
+     */
+    public function startTransaction(): void;
+
+    /**
+     * Commit a transaction
+     *
+     * @return void
+     */
+    public function commitTransaction(): void;
+
+    /**
+     * Rollback a transaction
+     *
+     * @return void
+     */
+    public function rollbackTransaction(): void;
 }
