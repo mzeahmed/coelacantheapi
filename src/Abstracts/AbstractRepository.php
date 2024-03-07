@@ -145,6 +145,27 @@ abstract class AbstractRepository implements RepositoryInterface {
     }
 
     /**
+     * @inheritDoc
+     */
+    public function startTransaction(): void {
+        $this->db->startTransaction();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function commitTransaction(): void {
+        $this->db->commitTransaction();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function rollbackTransaction(): void {
+        $this->db->rollbackTransaction();
+    }
+
+    /**
      * Prepare the data for bulk insert
      *
      * This method construct columns, placeholders and values for bulk insert from the given rows

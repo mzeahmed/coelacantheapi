@@ -144,7 +144,6 @@ interface RepositoryInterface {
      */
     public function bulkDelete(string $column, array $values): bool;
 
-
     /**
      * Start a transaction
      *
