@@ -2,7 +2,7 @@
 
 namespace App\Abstracts;
 
-use App\Database\Database;
+use App\Core\Database\Database;
 use App\Contracts\RepositoryInterface;
 
 abstract class AbstractRepository implements RepositoryInterface {

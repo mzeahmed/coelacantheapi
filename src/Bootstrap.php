@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Database\DBConnector;
-
 class Bootstrap {
     private static ?self $instance = null;
 
