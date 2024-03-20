@@ -15,20 +15,17 @@ class RequestHandler {
      * @return void
      */
     public static function handle(Router $router): void {
-        // Get JSON datas from the request
-        $data = json_decode(file_get_contents('php://input'), true);
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uriSegments = explode('/', trim($uri, '/'));
 
-        // If no data is found, return an error
-        if (null === $data) {
-            Response::sendJson(['error' => 'Invalid JSON'], 400);
+        // Remove empty segments
+        $uriSegments = array_filter($uriSegments);
+
+        if (empty($uriSegments)) {
+            Response::sendJson(['err', 'Route not found'], 404);
         }
 
-        // Ensure the request has a 'url' key
-        if (!isset($data['url'])) {
-            Response::sendJson(['error' => 'Missing "url" in request'], 400);
-        }
-
-        $url = $data['url'];
+        $url = '/' . implode('/', $uriSegments);
 
         $router->handleRequest($url);
     }
