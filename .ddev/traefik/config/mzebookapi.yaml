@@ -1,0 +1,139 @@
+#ddev-generated
+
+http:
+  routers:
+    
+    
+    mzebookapi-phpmyadmin-80-http:
+      
+      rule: HostRegexp(`mzebookapi.ddev.site`)
+      
+      middlewares:
+        - autodetect
+      service: "mzebookapi-phpmyadmin-80-http"
+      tls: false
+      entrypoints:
+        - http-8036
+    
+    
+    
+    mzebookapi-web-80-http:
+      
+      rule: HostRegexp(`mzebookapi.ddev.site`)
+      
+      middlewares:
+        - autodetect
+      service: "mzebookapi-web-80-http"
+      tls: false
+      entrypoints:
+        - http-81
+    
+    
+    mzebookapi-web-8025-http:
+      
+      rule: HostRegexp(`mzebookapi.ddev.site`)
+      
+      middlewares:
+        - autodetect
+      service: "mzebookapi-web-8025-http"
+      tls: false
+      entrypoints:
+        - http-8025
+    
+    
+    
+    
+    
+    mzebookapi-phpmyadmin-80-https:
+      
+      rule: HostRegexp(`mzebookapi.ddev.site`)
+      
+      middlewares:
+        - autodetect
+      service: "mzebookapi-phpmyadmin-80-https"
+      
+      tls: true
+      
+      entrypoints:
+        - http-8037
+    
+    
+    
+    
+    mzebookapi-web-80-https:
+      
+      rule: HostRegexp(`mzebookapi.ddev.site`)
+      
+      middlewares:
+        - autodetect
+      service: "mzebookapi-web-80-https"
+      
+      tls: true
+      
+      entrypoints:
+        - http-443
+    
+    
+    mzebookapi-web-8025-https:
+      
+      rule: HostRegexp(`mzebookapi.ddev.site`)
+      
+      middlewares:
+        - autodetect
+      service: "mzebookapi-web-8025-https"
+      
+      tls: true
+      
+      entrypoints:
+        - http-8026
+    
+    
+
+  # autodetect won't be needed in Traefik 3 https://github.com/traefik/traefik/pull/9546
+  middlewares:
+    autodetect:
+      contentType:
+        autoDetect: false
+
+  services:
+    
+    mzebookapi-phpmyadmin-80-http:
+      loadbalancer:
+        servers:
+          - url: http://ddev-mzebookapi-phpmyadmin:80
+    
+    mzebookapi-phpmyadmin-80-https:
+    
+      loadbalancer:
+        servers:
+          - url: http://ddev-mzebookapi-phpmyadmin:80
+    
+    mzebookapi-web-80-http:
+      loadbalancer:
+        servers:
+          - url: http://ddev-mzebookapi-web:80
+    
+    mzebookapi-web-8025-http:
+      loadbalancer:
+        servers:
+          - url: http://ddev-mzebookapi-web:8025
+    
+    mzebookapi-web-80-https:
+    
+      loadbalancer:
+        servers:
+          - url: http://ddev-mzebookapi-web:80
+    
+    mzebookapi-web-8025-https:
+    
+      loadbalancer:
+        servers:
+          - url: http://ddev-mzebookapi-web:8025
+    
+
+
+tls:
+  certificates:
+    - certFile: /mnt/ddev-global-cache/traefik/certs/mzebookapi.crt
+      keyFile: /mnt/ddev-global-cache/traefik/certs/mzebookapi.key
+

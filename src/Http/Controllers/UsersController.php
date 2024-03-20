@@ -10,5 +10,7 @@ namespace App\Http\Controllers;
  * @package App\Http\Controllers
  */
 class UsersController {
-    public function __construct() {}
+    public function index(): array {
+        return array('message' => 'Hello, world!');
+    }
 }

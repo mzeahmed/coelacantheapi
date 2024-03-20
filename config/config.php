@@ -29,3 +29,6 @@ define('DB_USER', env('DB_USER'));
 define('DB_PASSWORD', env('DB_PASSWORD'));
 define('DB_HOST', env('DB_HOST'));
 define('DB_PORT', env('DB_PORT'));
+
+// Load the routes
+require_once ROOT_PATH . '/routes/api.php';

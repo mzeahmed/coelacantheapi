@@ -1,17 +1,17 @@
-name: mzebookapi
+name: coelacantheapi
 type: php
 docroot: public
 php_version: "8.3"
 webserver_type: apache-fpm
 xdebug_enabled: false
-additional_hostnames: []
-additional_fqdns: []
+additional_hostnames: [ ]
+additional_fqdns: [ ]
 database:
-    type: mariadb
-    version: "10.4"
+  type: mariadb
+  version: "10.4"
 use_dns_when_possible: true
 composer_version: "2"
-web_environment: []
+web_environment: [ ]
 router_http_port: "81"
 
 # Key features of DDEV's config.yaml:
