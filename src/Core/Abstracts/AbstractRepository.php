@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Abstracts;
+namespace App\Core\Abstracts;
 
 use App\Core\Database\Database;
-use App\Contracts\RepositoryInterface;
+use App\Core\Contracts\RepositoryInterface;
 
 abstract class AbstractRepository implements RepositoryInterface {
     /**
