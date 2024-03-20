@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Controllers;
+namespace App\Http\Controllers;
 
 /**
  * Class UsersController
  *
- * @package App\Controllers
+ * @package App\Http\Controllers
  */
 class UsersController {
     public function __construct() {}
