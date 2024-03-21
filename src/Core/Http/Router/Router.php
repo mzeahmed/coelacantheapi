@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Router;
+namespace App\Core\Http\Router;
+
+use App\Core\Exceptions\RouterException;
 
 /**
  * Class Router
@@ -44,7 +46,7 @@ class Router {
     public function get(string $path, mixed $callback, string $name = null): Route {
         return $this->add($path, $callback, $name, 'GET');
     }
-    
+
     /**
      * Registers a POST route.
      *
