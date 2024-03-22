@@ -3,27 +3,23 @@
 namespace App\Core\Abstracts;
 
 use App\Core\Database\Database;
-use App\Core\Contracts\RepositoryInterface;
+use App\Core\Interfaces\RepositoryInterface;
 
-abstract class AbstractRepository implements RepositoryInterface {
-    /**
-     * @var string The table name
-     */
+abstract class AbstractRepository implements RepositoryInterface
+{
     protected string $tableName;
+    protected ?Database $db;
 
-    /**
-     * @var Database|null The database instance
-     */
-    protected ?Database $db = null;
-
-    public function __construct() {
-        $this->db = new Database();
+    public function __construct(Database $db)
+    {
+        $this->db = $db;
     }
 
     /**
      * @inheritDoc
      */
-    public function find(int $id, array $columns): ?array {
+    public function find(int $id, array $columns): false|array
+    {
         $columnsString = implode(',', $columns);
 
         $query = "SELECT $columnsString FROM $this->tableName WHERE id = :id";
@@ -34,7 +30,12 @@ abstract class AbstractRepository implements RepositoryInterface {
     /**
      * @inheritDoc
      */
-    public function findOneBy(array $where, array $columns = ['*'], array $joinArgs = [], string $mainTableAlias = ''): ?array {
+    public function findOneBy(
+        array $where,
+        array $columns = ['*'],
+        array $joinArgs = [],
+        string $mainTableAlias = ''
+    ): false|array {
         $query = $this->prepareSelectQuery($where, $columns, $joinArgs, [], $mainTableAlias, 1);
 
         return $this->db->fetchOne($query);
@@ -43,7 +44,8 @@ abstract class AbstractRepository implements RepositoryInterface {
     /**
      * @inheritDoc
      */
-    public function findAll(array $orderBy = []): array {
+    public function findAll(array $orderBy = []): array
+    {
         $orderClause = '';
         if (!empty($orderBy)) {
             $orderColumns = array_map(static function ($col, $dir) {
@@ -77,28 +79,32 @@ abstract class AbstractRepository implements RepositoryInterface {
     /**
      * @inheritDoc
      */
-    public function create(array $data): int|bool {
+    public function create(array $data): int|bool
+    {
         return $this->db->insert($this->tableName, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function update(array $data, array $where): int|bool {
+    public function update(array $data, array $where): int|bool
+    {
         return $this->db->update($this->tableName, $data, $where);
     }
 
     /**
      * @inheritDoc
      */
-    public function delete(array $where): bool {
+    public function delete(array $where): bool
+    {
         return $this->db->delete($this->tableName, $where);
     }
 
     /**
      * @inheritDoc
      */
-    public function bulkInsert(array $rows): bool {
+    public function bulkInsert(array $rows): bool
+    {
         if (empty($rows)) {
             return false;
         }
@@ -114,7 +120,8 @@ abstract class AbstractRepository implements RepositoryInterface {
     /**
      * @inheritDoc
      */
-    public function bulkUpdate(string $column, array $rows): bool {
+    public function bulkUpdate(string $column, array $rows): bool
+    {
         if (empty($rows)) {
             return false;
         }
@@ -133,7 +140,8 @@ abstract class AbstractRepository implements RepositoryInterface {
     /**
      * @inheritDoc
      */
-    public function bulkDelete(string $column, array $values): bool {
+    public function bulkDelete(string $column, array $values): bool
+    {
         if (empty($values)) {
             return false;
         }
@@ -147,34 +155,36 @@ abstract class AbstractRepository implements RepositoryInterface {
     /**
      * @inheritDoc
      */
-    public function startTransaction(): void {
+    public function startTransaction(): void
+    {
         $this->db->startTransaction();
     }
 
     /**
      * @inheritDoc
      */
-    public function commitTransaction(): void {
+    public function commitTransaction(): void
+    {
         $this->db->commitTransaction();
     }
 
     /**
      * @inheritDoc
      */
-    public function rollbackTransaction(): void {
+    public function rollbackTransaction(): void
+    {
         $this->db->rollbackTransaction();
     }
 
     /**
-     * Prepare the data for bulk insert
-     *
      * This method construct columns, placeholders and values for bulk insert from the given rows
      *
      * @param array $rows The records to insert
      *
      * @return array The prepared data for bulk insert
      */
-    private function prepareBulkData(array $rows): array {
+    private function prepareBulkData(array $rows): array
+    {
         $firstRow = current($rows);
         $columns = array_keys($firstRow);
         $placeholders = array_fill(
@@ -287,19 +297,22 @@ abstract class AbstractRepository implements RepositoryInterface {
      * );
      * $results = $repository->findBy($criteria) ;
      */
-    private function prepareWhereClause(array $where): string {
+    private function prepareWhereClause(array $where): string
+    {
         $whereClasue = [];
         foreach ($where as $column => $data) {
             // If the data is an array with operator and one value
             if (isset($data['operator'], $data['value']) && is_array($data)) {
                 if ($data['operator'] === 'IN') {
-                    $inValues = implode(',',
+                    $inValues = implode(
+                        ',',
                         array_map(static function ($value) {
-                            return is_string($value) ? "'{$value}'" : (int) $value;
-                        }, $data['value']));
+                            return is_string($value) ? "'{$value}'" : (int)$value;
+                        }, $data['value'])
+                    );
                     $whereClasue[] = "{$column} IN ({$inValues})";
                 } else {
-                    $value = is_string($data['value']) ? "'{$data['value']}'" : (int) $data['value'];
+                    $value = is_string($data['value']) ? "'{$data['value']}'" : (int)$data['value'];
                     $whereClasue[] = "{$column} {$data['operator']} {$value}";
                 }
             } elseif (is_string($data) && 0 === stripos($data, 'EXISTS')) {
@@ -307,7 +320,7 @@ abstract class AbstractRepository implements RepositoryInterface {
                 $whereClasue[] = $data;
             } else {
                 // If it is just one value, use '=' as the default operator
-                $data = is_string($data) ? "'{$data}'" : (int) $data;
+                $data = is_string($data) ? "'{$data}'" : (int)$data;
                 $whereClasue[] = "{$column} = {$data}";
             }
         }
@@ -324,7 +337,8 @@ abstract class AbstractRepository implements RepositoryInterface {
      * @return array The JOIN clause and the columns to select.
      * @since 2.2.0
      */
-    private function joinArgsLoop(array $joinArgs, array $columns = []): array {
+    private function joinArgsLoop(array $joinArgs, array $columns = []): array
+    {
         $joinClauses = [];
 
         foreach ($joinArgs as $join) {

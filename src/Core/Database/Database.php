@@ -4,22 +4,17 @@ declare(strict_types=1);
 
 namespace App\Core\Database;
 
-class Database {
-    private ?DBConnector $connector = null;
+class Database
+{
+    private ?DBConnector $connector;
 
-    public function __construct() {
-        $this->connector = new DBConnector();
+    public function __construct(DBConnector $connector)
+    {
+        $this->connector = $connector;
     }
 
-    /**
-     * Fetch all records from the database
-     *
-     * @param string $query The query to execute
-     * @param array $params The parameters to bind
-     *
-     * @return array|null
-     */
-    public function fetchAll(string $query, array $params = []): ?array {
+    public function fetchAll(string $query, array $params = []): ?array
+    {
         if (count($params) > 0) {
             $stmt = $this->getPDO()?->prepare($query);
             $stmt->execute($params);
@@ -30,15 +25,8 @@ class Database {
         return $this->getPDO()?->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Fetch a single record from the database
-     *
-     * @param string $query The query to execute
-     * @param array $data The parameters to bind
-     *
-     * @return array|null
-     */
-    public function fetchOne(string $query, array $data = []): ?array {
+    public function fetchOne(string $query, array $data = []): false|array
+    {
         if (count($data) > 0) {
             $stmt = $this->getPDO()?->prepare($query);
             $stmt->execute($data);
@@ -49,18 +37,11 @@ class Database {
         return $this->getPDO()?->query($query)->fetch(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Insert a record into the database
-     *
-     * @param string $tableName The table name
-     * @param array $data The data to insert
-     *
-     * @return int|bool
-     */
-    public function insert(string $tableName, array $data): int|bool {
+    public function insert(string $tableName, array $data): int|bool
+    {
         $columns = implode(',', array_keys($data));
         $values = implode(',', array_map(static function ($value) {
-            return is_string($value) ? "'{$value}'" : (int) $value;
+            return is_string($value) ? "'{$value}'" : (int)$value;
         }, $data));
 
         $query = "INSERT INTO $tableName ($columns) VALUES ($values)";
@@ -77,22 +58,14 @@ class Database {
         return false;
     }
 
-    /**
-     * Update a record in the database
-     *
-     * @param string $tableName The table name
-     * @param array $data The data to update
-     * @param array $where The where clause
-     *
-     * @return int|bool
-     */
-    public function update(string $tableName, array $data, array $where): int|bool {
+    public function update(string $tableName, array $data, array $where): int|bool
+    {
         $set = implode(',', array_map(static function ($value, $key) {
-            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int) $value);
+            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int)$value);
         }, $data, array_keys($data)));
 
         $whereClause = implode(' AND ', array_map(static function ($value, $key) {
-            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int) $value);
+            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int)$value);
         }, $where, array_keys($where)));
 
         $query = "UPDATE $tableName SET $set WHERE $whereClause";
@@ -109,17 +82,10 @@ class Database {
         return false;
     }
 
-    /**
-     * Delete a record from the database
-     *
-     * @param string $tableName The table name
-     * @param array $where The where clause
-     *
-     * @return bool
-     */
-    public function delete(string $tableName, array $where): bool {
+    public function delete(string $tableName, array $where): bool
+    {
         $whereClause = implode(' AND ', array_map(static function ($value, $key) {
-            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int) $value);
+            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int)$value);
         }, $where, array_keys($where)));
 
         $query = "DELETE FROM $tableName WHERE $whereClause";
@@ -132,63 +98,36 @@ class Database {
         return $count > 0;
     }
 
-    /**
-     * Get last inserted ID
-     *
-     * @return int
-     */
-    public function lastInsertId(): int {
-        return (int) $this->getPDO()?->lastInsertId();
+    public function lastInsertId(): int
+    {
+        return (int)$this->getPDO()?->lastInsertId();
     }
 
-    /**
-     * Execute a query
-     *
-     * @param string $query The query to execute
-     * @param array $params The parameters to bind
-     *
-     * @return bool
-     */
-    public function execute(string $query, array $params = []): bool {
+    public function execute(string $query, array $params = []): bool
+    {
         $stmt = $this->getPDO()?->prepare($query);
         $stmt->execute($params);
 
         return $stmt->rowCount() > 0;
     }
 
-    /**
-     * Start a transaction
-     *
-     * @return void
-     */
-    public function startTransaction(): void {
+    public function startTransaction(): void
+    {
         $this->getPDO()?->beginTransaction();
     }
 
-    /**
-     * Commit a transaction
-     *
-     * @return void
-     */
-    public function commitTransaction(): void {
+    public function commitTransaction(): void
+    {
         $this->getPDO()?->commit();
     }
 
-    /**
-     * Rollback a transaction
-     *
-     * @return void
-     */
-    public function rollbackTransaction(): void {
+    public function rollbackTransaction(): void
+    {
         $this->getPDO()?->rollBack();
     }
 
-    /**
-     * Get the PDO instance
-     *
-     * @return \PDO|null
-     */
-    private function getPDO(): ?\PDO {
+    private function getPDO(): ?\PDO
+    {
         return $this->connector->getConnection();
     }
 }

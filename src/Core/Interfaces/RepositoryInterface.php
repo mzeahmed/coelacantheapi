@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Core\Contracts;
+namespace App\Core\Interfaces;
 
-interface RepositoryInterface {
+interface RepositoryInterface
+{
     /**
      * Fetch one record from the database
      *
      * @param int $id The record ID
      * @param array $columns The columns to fetch
      *
-     * @return array|null The record or null
+     * @return array|false The record or false
      */
-    public function find(int $id, array $columns): ?array;
+    public function find(int $id, array $columns): false|array;
 
     /**
      * Fetch one record by a given column from the database
@@ -37,9 +38,14 @@ interface RepositoryInterface {
      *        );
      * @param string $mainTableAlias The main table alias
      *
-     * @return array|null The record or null
+     * @return array|false The record or false
      */
-    public function findOneBy(array $where, array $columns = ['*'], array $joinArgs = [], string $mainTableAlias = ''): ?array;
+    public function findOneBy(
+        array $where,
+        array $columns = ['*'],
+        array $joinArgs = [],
+        string $mainTableAlias = ''
+    ): false|array;
 
     /**
      * Fetch all records from the database

@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core\Exceptions;
 
-class RouterException extends \Exception {
-
+class RouterException extends \Exception
+{
 }

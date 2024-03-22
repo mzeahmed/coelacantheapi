@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Http\Router;
 
 use App\Core\Exceptions\RouterException;
+use DI\Container;
 
 /**
  * Class Router
@@ -14,7 +15,8 @@ use App\Core\Exceptions\RouterException;
  *
  * @package App\Core\Router
  */
-class Router {
+class Router
+{
     /**
      * @var string $url The requested URL.
      */
@@ -26,12 +28,19 @@ class Router {
     private array $routes = [];
 
     /**
+     * @var Container $container The DI container instance.
+     */
+    private Container $container;
+
+    /**
      * @var array $namedRoutes The registered named routes.
      */
     private array $namedRoutes = [];
 
-    public function __construct(string $url) {
+    public function __construct(string $url, Container $container)
+    {
         $this->url = $url;
+        $this->container = $container;
     }
 
     /**
@@ -43,7 +52,8 @@ class Router {
      *
      * @return Route The created route.
      */
-    public function get(string $path, mixed $callback, string $name = null): Route {
+    public function get(string $path, mixed $callback, string $name = null): Route
+    {
         return $this->add($path, $callback, $name, 'GET');
     }
 
@@ -56,7 +66,8 @@ class Router {
      *
      * @return Route The created route.
      */
-    public function post(string $path, mixed $callback, string $name = null): Route {
+    public function post(string $path, mixed $callback, string $name = null): Route
+    {
         return $this->add($path, $callback, $name, 'POST');
     }
 
@@ -67,7 +78,8 @@ class Router {
      * @throws RouterException If no route matches the requested URL or if the request method is not supported.
      *
      */
-    public function run(): mixed {
+    public function run(): mixed
+    {
         if (!isset($this->routes[$_SERVER['REQUEST_METHOD']])) {
             throw new RouterException('REQUEST_METHOD does not exist');
         }
@@ -91,7 +103,8 @@ class Router {
      * @throws RouterException If no route matches the given name.
      *
      */
-    public function url(string $name, array $params = []): string {
+    public function url(string $name, array $params = []): string
+    {
         if (!isset($this->namedRoutes[$name])) {
             throw new RouterException('No route matches this name');
         }
@@ -109,8 +122,9 @@ class Router {
      *
      * @return Route The created route.
      */
-    private function add(string $path, mixed $callback, ?string $name, string $method): Route {
-        $route = new Route($path, $callback);
+    private function add(string $path, mixed $callback, ?string $name, string $method): Route
+    {
+        $route = new Route($path, $callback, $this->container);
         $this->routes[$method][] = $route;
 
         if (is_string($callback) && null === $name) {

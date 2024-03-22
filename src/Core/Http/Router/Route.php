@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace App\Core\Http\Router;
 
-/**
- * Class Route
- *
- * The Route class represents a single route in the application.
- * It stores the path, callback, matches, and parameters of the route.
- *
- * @package App\Core\Router
- */
-class Route {
+use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+
+class Route
+{
 
     /**
      * @var string $path The path to match against the URL.
@@ -34,9 +31,16 @@ class Route {
      */
     private array $params = [];
 
-    public function __construct(string $path, mixed $callback) {
+    /**
+     * @var Container $container The DI container instance.
+     */
+    private Container $container;
+
+    public function __construct(string $path, mixed $callback, Container $container)
+    {
         $this->path = trim($path, '/');
         $this->callback = $callback;
+        $this->container = $container;
     }
 
     /**
@@ -47,7 +51,8 @@ class Route {
      *
      * @return $this
      */
-    public function with(string $param, string $regex): self {
+    public function with(string $param, string $regex): self
+    {
         $this->params[$param] = str_replace('(', '(?:', $regex);
 
         return $this;
@@ -60,7 +65,8 @@ class Route {
      *
      * @return bool True if the route matches the URL, false otherwise.
      */
-    public function match(string $url): bool {
+    public function match(string $url): bool
+    {
         $url = trim($url, '/');
         $path = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $this->path);
         $regex = "#^$path$#i";
@@ -81,11 +87,16 @@ class Route {
      *
      * @return mixed
      */
-    public function call(): mixed {
+    public function call(): mixed
+    {
         if (is_string($this->callback)) {
             $controllerAction = explode('@', $this->callback);
             [$controllerName, $action] = $controllerAction;
-            $controllerInstance = new $controllerName();
+            try {
+                $controllerInstance = $this->container->get($controllerName);
+            } catch (DependencyException|NotFoundException $e) {
+                return $e->getMessage();
+            }
 
             return call_user_func_array([$controllerInstance, $action], $this->matches);
         }
@@ -100,7 +111,8 @@ class Route {
      *
      * @return string The regular expression.
      */
-    private function paramMatch(array $match): string {
+    private function paramMatch(array $match): string
+    {
         if (isset($this->params[$match[1]])) {
             return '(' . $this->params[$match[1]] . ')';
         }
@@ -115,7 +127,8 @@ class Route {
      *
      * @return string The URL for the route.
      */
-    public function getUrl(array $params): string {
+    public function getUrl(array $params): string
+    {
         $path = $this->path;
 
         foreach ($params as $k => $v) {

@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace App\Http\Api\Controllers;
 
 use App\Core\Http\Response;
-use JetBrains\PhpStorm\NoReturn;
 use App\Core\Http\Security\Authentication;
+use JetBrains\PhpStorm\NoReturn;
 
-class SecurityController {
+class SecurityController
+{
     /**
      * Login a user
      *
-     * @return void
-     * @throws \JsonException If the JSON cannot be decoded
+     * @throws \JsonException
      */
     #[NoReturn]
-    public function login(): void {
+    public function login(): void
+    {
         $data = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
 
         $login = $data['login'];
