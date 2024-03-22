@@ -83,11 +83,11 @@ class Route {
      */
     public function call(): mixed {
         if (is_string($this->callback)) {
-            $params = explode('@', $this->callback);
-            $controller = "App\\Http\\Controllers\\" . $params[0] . "Controller";
-            $controller = new $controller();
+            $controllerAction = explode('@', $this->callback);
+            [$controllerName, $action] = $controllerAction;
+            $controllerInstance = new $controllerName();
 
-            return call_user_func_array([$controller, $params[1]], $this->matches);
+            return call_user_func_array([$controllerInstance, $action], $this->matches);
         }
 
         return call_user_func_array($this->callback, $this->matches);

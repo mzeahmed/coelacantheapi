@@ -2,12 +2,11 @@
 
 $router = new \App\Core\Http\Router\Router($_GET['url']);
 
-$router->get('/', function () {
-    echo 'Home';
+$router->get(API_BASE_URL . '/', function () {
+    echo 'Welcome to API v1';
 });
 
-// $router->get('/users/:id', 'Users@show')->with('id', '[0-9]+');
-$router->get('/users/:id', 'Users@show')->with('id', '[0-9]+');
+$router->get(API_BASE_URL . '/users/:id', 'App\Http\Api\Controllers\UsersController@show')->with('id', '[0-9]+');
 
 
 try {
