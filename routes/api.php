@@ -8,6 +8,7 @@ $router->get(API_BASE_URL . '/', function () {
 
 $router->get(API_BASE_URL . '/users/:id', 'App\Http\Api\Controllers\UsersController@show')->with('id', '[0-9]+');
 
+$router->post(API_BASE_URL . '/login', 'App\Http\Api\Controllers\SecurityController@login');
 
 try {
     $router->run();

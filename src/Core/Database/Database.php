@@ -24,10 +24,10 @@ class Database {
             $stmt = $this->getPDO()?->prepare($query);
             $stmt->execute($params);
 
-            return $stmt->fetchAll();
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
 
-        return $this->getPDO()?->query($query)->fetchAll();
+        return $this->getPDO()?->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -43,10 +43,10 @@ class Database {
             $stmt = $this->getPDO()?->prepare($query);
             $stmt->execute($data);
 
-            return $stmt->fetch();
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
 
-        return $this->getPDO()?->query($query)->fetch();
+        return $this->getPDO()?->query($query)->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
