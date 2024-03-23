@@ -150,24 +150,9 @@ interface RepositoryInterface
      */
     public function bulkDelete(string $column, array $values): bool;
 
-    /**
-     * Start a transaction
-     *
-     * @return void
-     */
     public function startTransaction(): void;
 
-    /**
-     * Commit a transaction
-     *
-     * @return void
-     */
     public function commitTransaction(): void;
 
-    /**
-     * Rollback a transaction
-     *
-     * @return void
-     */
     public function rollbackTransaction(): void;
 }

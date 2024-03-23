@@ -30,12 +30,8 @@ abstract class AbstractRepository implements RepositoryInterface
     /**
      * @inheritDoc
      */
-    public function findOneBy(
-        array $where,
-        array $columns = ['*'],
-        array $joinArgs = [],
-        string $mainTableAlias = ''
-    ): false|array {
+    public function findOneBy(array $where, array $columns = ['*'], array $joinArgs = [], string $mainTableAlias = ''): false|array
+    {
         $query = $this->prepareSelectQuery($where, $columns, $joinArgs, [], $mainTableAlias, 1);
 
         return $this->db->fetchOne($query);
@@ -152,25 +148,16 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->db->execute($query, $values);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function startTransaction(): void
     {
         $this->db->startTransaction();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function commitTransaction(): void
     {
         $this->db->commitTransaction();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function rollbackTransaction(): void
     {
         $this->db->rollbackTransaction();
@@ -307,12 +294,12 @@ abstract class AbstractRepository implements RepositoryInterface
                     $inValues = implode(
                         ',',
                         array_map(static function ($value) {
-                            return is_string($value) ? "'{$value}'" : (int)$value;
+                            return is_string($value) ? "'{$value}'" : (int) $value;
                         }, $data['value'])
                     );
                     $whereClasue[] = "{$column} IN ({$inValues})";
                 } else {
-                    $value = is_string($data['value']) ? "'{$data['value']}'" : (int)$data['value'];
+                    $value = is_string($data['value']) ? "'{$data['value']}'" : (int) $data['value'];
                     $whereClasue[] = "{$column} {$data['operator']} {$value}";
                 }
             } elseif (is_string($data) && 0 === stripos($data, 'EXISTS')) {
@@ -320,7 +307,7 @@ abstract class AbstractRepository implements RepositoryInterface
                 $whereClasue[] = $data;
             } else {
                 // If it is just one value, use '=' as the default operator
-                $data = is_string($data) ? "'{$data}'" : (int)$data;
+                $data = is_string($data) ? "'{$data}'" : (int) $data;
                 $whereClasue[] = "{$column} = {$data}";
             }
         }
