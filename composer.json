@@ -11,8 +11,7 @@
     }
   ],
   "require": {
-    "php": "^8.2",
-    "ext-pdo": "*",
+    "php": "^8.3",
     "oscarotero/env": "^2.1",
     "php-di/php-di": "^7.0",
     "vlucas/phpdotenv": "^5.6"
