@@ -2,9 +2,6 @@
 
 use function Env\env;
 
-/**
- * Directory containing all of the app's files
- */
 define('ROOT_PATH', dirname(__DIR__));
 
 /**
@@ -30,7 +27,9 @@ define('DB_PASSWORD', env('DB_PASSWORD'));
 define('DB_HOST', env('DB_HOST'));
 define('DB_PORT', env('DB_PORT'));
 
-define('API_BASE_URL', '/api/v1');
+define('JWT_AUTH_SECRET_KEY', env('JWT_AUTH_SECRET_KEY'));
 
-// Load the routes
+define('API_URL', env('API_URL'));
+define('API_BASE_SLUG', '/api/v1');
+
 require_once ROOT_PATH . '/routes/api.php';

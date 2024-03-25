@@ -15,13 +15,13 @@ try {
 
 $router = new \App\Core\Http\Router\Router($_GET['url'], $container);
 
-$router->get(API_BASE_URL . '/', function () {
+$router->get(API_BASE_SLUG . '/', function () {
     echo 'Welcome to Coelacanthe API v1';
 });
 
-$router->get(API_BASE_URL . '/users/:id', 'App\Http\Api\Controllers\UsersController@show')->with('id', '[0-9]+');
+$router->get(API_BASE_SLUG . '/users/:id', 'App\Http\Api\Controllers\UsersController@show')->with('id', '[0-9]+');
 
-$router->post(API_BASE_URL . '/login', 'App\Http\Api\Controllers\SecurityController@login');
+$router->post(API_BASE_SLUG . '/login', 'App\Http\Api\Controllers\SecurityController@login');
 
 try {
     $router->run();

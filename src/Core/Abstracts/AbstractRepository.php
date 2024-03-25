@@ -7,7 +7,14 @@ use App\Core\Interfaces\RepositoryInterface;
 
 abstract class AbstractRepository implements RepositoryInterface
 {
+    /**
+     * @var string $tableName The table name of the repository
+     */
     protected string $tableName;
+
+    /**
+     * @var ?Database $db The database instance
+     */
     protected ?Database $db;
 
     public function __construct(Database $db)
@@ -15,9 +22,6 @@ abstract class AbstractRepository implements RepositoryInterface
         $this->db = $db;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function find(int $id, array $columns): false|array
     {
         $columnsString = implode(',', $columns);
@@ -27,9 +31,6 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->db->fetchOne($query, [':id' => $id]);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function findOneBy(array $where, array $columns = ['*'], array $joinArgs = [], string $mainTableAlias = ''): false|array
     {
         $query = $this->prepareSelectQuery($where, $columns, $joinArgs, [], $mainTableAlias, 1);
@@ -37,9 +38,6 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->db->fetchOne($query);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function findAll(array $orderBy = []): array
     {
         $orderClause = '';
@@ -56,9 +54,6 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->db->fetchAll($query);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function findBy(
         array $where,
         array $columns = ['*'],
@@ -72,33 +67,21 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->db->fetchAll($query);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function create(array $data): int|bool
     {
         return $this->db->insert($this->tableName, $data);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function update(array $data, array $where): int|bool
     {
         return $this->db->update($this->tableName, $data, $where);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function delete(array $where): bool
     {
         return $this->db->delete($this->tableName, $where);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function bulkInsert(array $rows): bool
     {
         if (empty($rows)) {
@@ -113,9 +96,6 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->db->execute($query, $bulkData['values']);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function bulkUpdate(string $column, array $rows): bool
     {
         if (empty($rows)) {
@@ -133,9 +113,6 @@ abstract class AbstractRepository implements RepositoryInterface
         return $this->db->execute($query, $bulkData['values']);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function bulkDelete(string $column, array $values): bool
     {
         if (empty($values)) {
