@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Api\Controllers;
 
 use App\Core\Http\Response;
+use App\Core\Http\Message\Request;
 use App\Core\Http\Security\Authentication;
 
 class SecurityController
@@ -14,7 +15,7 @@ class SecurityController
      *
      * @throws \JsonException
      */
-    public function login(): void
+    public function login(Request $request): void
     {
         $post = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
 

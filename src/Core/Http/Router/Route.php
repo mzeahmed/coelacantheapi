@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Core\Http\Router;
 
 use DI\Container;
-use DI\DependencyException;
 use DI\NotFoundException;
+use DI\DependencyException;
 
 class Route
 {

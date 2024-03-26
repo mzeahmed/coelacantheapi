@@ -13,7 +13,14 @@ try {
 
 \App\Core\Container::setContainer($container);
 
-$router = new \App\Core\Http\Router\Router($_GET['url'], $container);
+$request = new \App\Core\Http\Message\Request(
+    $_SERVER['REQUEST_METHOD'], // Méthode HTTP
+    new \App\Core\Http\Message\Uri($_SERVER['REQUEST_URI']),
+    getallheaders(),
+    new \App\Core\Http\Message\Stream(fopen('php://input', 'rb'))
+);
+
+$router = new \App\Core\Http\Router\Router($request, $container);
 
 $router->get(API_BASE_SLUG . '/', function () {
     echo 'Welcome to Coelacanthe API v1';

@@ -2,8 +2,6 @@
 
 namespace App\Core\Http;
 
-use JetBrains\PhpStorm\NoReturn;
-
 class Response
 {
     /**
@@ -15,7 +13,6 @@ class Response
      * @return void
      * @throws \JsonException
      */
-    #[NoReturn]
     public static function sendJson(array $data, int $status = 200): void
     {
         self::setCorsHeaders();
