@@ -14,13 +14,15 @@ try {
 \App\Core\Container::setContainer($container);
 
 $router = new \App\Core\Http\Router\Router($container);
-$router->addMiddleware(new \App\Http\Middleware\AuthMiddleware());
 
 $router->get(API_BASE_SLUG . '/', function () {
     echo 'Welcome to Coelacanthe API v1';
 });
 
-$router->get(API_BASE_SLUG . '/users/:id', 'App\Http\Api\Controllers\UsersController@show')->with('id', '[0-9]+');
+$router
+    ->get(API_BASE_SLUG . '/users/:id', 'App\Http\Api\Controllers\UsersController@show')
+    ->with('id', '[0-9]+')
+    ->addMiddleware(new \App\Http\Middleware\AuthMiddleware());
 
 $router->post(API_BASE_SLUG . '/login', 'App\Http\Api\Controllers\SecurityController@login');
 

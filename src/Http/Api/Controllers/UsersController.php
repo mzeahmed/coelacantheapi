@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Api\Controllers;
 
-use App\Core\Http\Response;
+use App\Core\Helpers\JSON;
+use App\Core\Http\Message\Request;
 use App\Services\UserService;
 
 class UsersController
@@ -16,12 +17,17 @@ class UsersController
         $this->userService = $userService;
     }
 
-    public function show(int $id): void
+    public function show(Request $request): void
     {
+        $uri = $request->getUri();
+        $path = $uri->getPath();
+
+        $id = (int)basename($path);
+
         $user = $this->userService->getUser($id);
 
         if (false === $user) {
-            Response::sendJson(['error' => 'User not found'], 404);
+            JSON::sendError(['message' => 'User not found'], 404);
         }
 
 
@@ -34,6 +40,6 @@ class UsersController
             'last_login' => $user['last_login'],
         ];
 
-        Response::sendJson($data);
+        JSON::sendSuccess($data);
     }
 }

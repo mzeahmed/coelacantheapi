@@ -50,7 +50,7 @@ class Request implements RequestInterface
 
     public function getHeader(string $name): array
     {
-        return $this->headers[$name] ?? [];
+        return [$name => $this->headers[$name]] ?? [];
     }
 
     public function getHeaderLine(string $name): string

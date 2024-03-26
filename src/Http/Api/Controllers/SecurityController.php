@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Api\Controllers;
 
+use App\Core\Helpers\JSON;
 use App\Core\Http\Message\Request;
 use App\Core\Http\Security\Authentication;
-use App\Core\Abstracts\AbstractController;
 
-class SecurityController extends AbstractController
+class SecurityController
 {
     /**
      * Login a user
@@ -27,9 +27,9 @@ class SecurityController extends AbstractController
         $data = Authentication::authenticate($login, $password);
 
         if (!$data) {
-            $this->json(['error' => 'Invalid credentials'], 401);
+            JSON::sendError(['message' => 'Invalid credentials'], 401);
         }
 
-        $this->json(['data' => $data]);
+        JSON::sendSuccess(['json' => $data]);
     }
 }

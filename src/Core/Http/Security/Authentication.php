@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Core\Http\Security;
 
 use App\Core\Container;
+use App\Core\Helpers\JSON;
 use App\Core\Helpers\JWT;
-use App\Core\Http\Response;
 use App\Repository\UsersRepository;
 
 class Authentication
@@ -17,7 +17,7 @@ class Authentication
         $user = $repo->findOneBy(['login' => $username]);
 
         if (!$user) {
-            Response::sendJson(['error' => 'User not found'], 404);
+            JSON::sendError(['message' => 'User not found'], 404);
         }
 
         if (password_verify($password, $user['password'])) {
@@ -27,9 +27,11 @@ class Authentication
                 return $token;
             }
 
-            Response::sendJson(['error' => 'Error generating token'], 500);
+            JSON::sendError(['message' => 'Error generating token'], 500);
         }
 
-        Response::sendJson(['error' => 'Invalid credentials'], 401);
+        JSON::sendError(['message' => 'Invalid credentials'], 401);
+
+        return false;
     }
 }

@@ -8,6 +8,7 @@ use DI\Container;
 use DI\NotFoundException;
 use DI\DependencyException;
 use App\Core\Http\Message\Request;
+use App\Core\Interfaces\MiddlewareInterface;
 
 class Route
 {
@@ -37,6 +38,11 @@ class Route
      */
     private Container $container;
 
+    /**
+     * @var array $middlewares The middlewares to apply to the route.
+     */
+    private array $middlewares = [];
+
     public function __construct(string $path, mixed $callback, Container $container)
     {
         $this->path = trim($path, '/');
@@ -57,6 +63,25 @@ class Route
         $this->params[$param] = str_replace('(', '(?:', $regex);
 
         return $this;
+    }
+
+    /**
+     * Adds a middleware to the route.
+     *
+     * @param MiddlewareInterface $middleware The middleware to add.
+     *
+     * @return $this
+     */
+    public function addMiddleware(MiddlewareInterface $middleware): self
+    {
+        $this->middlewares[] = $middleware;
+
+        return $this;
+    }
+
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
     }
 
     /**

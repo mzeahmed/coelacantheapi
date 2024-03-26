@@ -9,7 +9,7 @@ use Firebase\JWT\JWT as FirebaseJWT;
 
 class JWT
 {
-    private const SUPPORTED_ALGS = [
+    private const array SUPPORTED_ALGS = [
         'HS256',
         'HS384',
         'HS512',
@@ -33,9 +33,9 @@ class JWT
         }
 
         $token = [
-            'iss' => API_URL, // Issuer of the token
-            'iat' => time(), // Time when the token was issued.
-            'nbf' => time(), // Time before which the token is not yet valid.
+            'iss' => API_URL,       // Issuer of the token
+            'iat' => time(),        // Time when the token was issued.
+            'nbf' => time(),        // Time before which the token is not yet valid.
             'exp' => time() + 3600, // Expiration time
             'data' => [
                 'user' => [

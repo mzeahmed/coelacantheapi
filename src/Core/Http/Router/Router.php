@@ -10,7 +10,6 @@ use App\Core\Http\Message\Stream;
 use App\Core\Http\Message\Request;
 use App\Core\Http\Message\Response;
 use App\Core\Exceptions\RouterException;
-use App\Core\Interfaces\MiddlewareInterface;
 
 /**
  * Class Router
@@ -42,14 +41,10 @@ class Router
      */
     private array $namedRoutes = [];
 
-    /**
-     * @var array $middlewares The registered middlewares.
-     */
-    private array $middlewares = [];
-
     public function __construct(Container $container)
     {
-        $this->request = new Request($_SERVER['REQUEST_METHOD'],
+        $this->request = new Request(
+            $_SERVER['REQUEST_METHOD'],
             new Uri($_SERVER['REQUEST_URI']),
             getallheaders(),
             new Stream(fopen('php://input', 'rb'))
@@ -58,15 +53,23 @@ class Router
     }
 
     /**
-     * Adds a middleware to the stack.
+     * Adds routes to a specific middleware.
      *
-     * @param MiddlewareInterface $middleware
+     * @param array $routes The routes to add the middleware to.
+     * @param array $middlewares The middlewares to add to the routes.
      *
      * @return void
+     *
+     * @example
+     *      $router->addGroupMiddleware([$router->get('/users', 'UsersController@index')], [new AuthMiddleware()]);
      */
-    public function addMiddleware(MiddlewareInterface $middleware): void
+    public function addGroupMiddleware(array $routes, array $middlewares): void
     {
-        $this->middlewares[] = $middleware;
+        foreach ($routes as $route) {
+            foreach ($middlewares as $middleware) {
+                $route->addMiddleware($middleware);
+            }
+        }
     }
 
     /**
@@ -113,8 +116,8 @@ class Router
 
             foreach ($this->routes[$request->getMethod()] as $route) {
                 if ($route->match($path)) {
-                    foreach ($this->middlewares as $middleware) {
-                        $response = $middleware->handle($request, function () use ($route, $request) {
+                    foreach ($route->getMiddlewares() as $middleware) {
+                        $middleware->handle($request, function () use ($route, $request) {
                             return $route->call($request);
                         });
                     }
