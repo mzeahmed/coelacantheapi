@@ -10,73 +10,112 @@ use Psr\Http\Message\ResponseInterface;
 
 class Response implements ResponseInterface
 {
+    private string $protocolVersion;
+    private array $headers;
+    private StreamInterface $body;
+    private int $statusCode;
+    private string $reasonPhrase;
+
+    public function __construct(
+        StreamInterface $body,
+        int $status = 200,
+        array $headers = [],
+        string $protocolVersion = '1.1',
+        string $reasonPhrase = ''
+    ) {
+        $this->body = $body;
+        $this->statusCode = $status;
+        $this->headers = $headers;
+        $this->protocolVersion = $protocolVersion;
+        $this->reasonPhrase = $reasonPhrase;
+    }
+
     public function getProtocolVersion(): string
     {
-        // TODO: Implement getProtocolVersion() method.
+        return $this->protocolVersion;
     }
 
     public function withProtocolVersion(string $version): MessageInterface
     {
-        // TODO: Implement withProtocolVersion() method.
+        $new = clone $this;
+        $new->protocolVersion = $version;
+
+        return $new;
     }
 
     public function getHeaders(): array
     {
-        // TODO: Implement getHeaders() method.
+        return $this->headers;
     }
 
     public function hasHeader(string $name): bool
     {
-        // TODO: Implement hasHeader() method.
+        return isset($this->headers[$name]);
     }
 
     public function getHeader(string $name): array
     {
-        // TODO: Implement getHeader() method.
+        return $this->headers[$name] ?? [];
     }
 
     public function getHeaderLine(string $name): string
     {
-        // TODO: Implement getHeaderLine() method.
+        return implode(', ', $this->getHeader($name));
     }
 
     public function withHeader(string $name, $value): MessageInterface
     {
-        // TODO: Implement withHeader() method.
+        $new = clone $this;
+        $new->headers[$name] = (array) $value;
+
+        return $new;
     }
 
     public function withAddedHeader(string $name, $value): MessageInterface
     {
-        // TODO: Implement withAddedHeader() method.
+        $new = clone $this;
+        $new->headers[$name] = array_merge($this->getHeader($name), (array) $value);
+
+        return $new;
     }
 
     public function withoutHeader(string $name): MessageInterface
     {
-        // TODO: Implement withoutHeader() method.
+        $new = clone $this;
+        unset($new->headers[$name]);
+
+        return $new;
     }
 
     public function getBody(): StreamInterface
     {
-        // TODO: Implement getBody() method.
+        return $this->body;
     }
 
     public function withBody(StreamInterface $body): MessageInterface
     {
-        // TODO: Implement withBody() method.
+        $new = clone $this;
+        $new->body = $body;
+
+        return $new;
     }
 
     public function getStatusCode(): int
     {
-        // TODO: Implement getStatusCode() method.
+        return $this->statusCode;
     }
 
     public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface
     {
-        // TODO: Implement withStatus() method.
+        $new = clone $this;
+        $new->statusCode = $code;
+        $new->reasonPhrase = $reasonPhrase;
+
+        return $new;
     }
 
     public function getReasonPhrase(): string
     {
-        // TODO: Implement getReasonPhrase() method.
+        return $this->reasonPhrase;
     }
 }

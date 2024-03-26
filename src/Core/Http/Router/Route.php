@@ -7,6 +7,7 @@ namespace App\Core\Http\Router;
 use DI\Container;
 use DI\NotFoundException;
 use DI\DependencyException;
+use App\Core\Http\Message\Request;
 
 class Route
 {
@@ -85,9 +86,11 @@ class Route
     /**
      * Calls the route's callback.
      *
+     * @param Request|null $request The request object.
+     *
      * @return mixed
      */
-    public function call(): mixed
+    public function call(?Request $request = null): mixed
     {
         if (is_string($this->callback)) {
             $controllerAction = explode('@', $this->callback);
@@ -98,10 +101,10 @@ class Route
                 return $e->getMessage();
             }
 
-            return call_user_func_array([$controllerInstance, $action], $this->matches);
+            return call_user_func_array([$controllerInstance, $action], [$request]);
         }
 
-        return call_user_func_array($this->callback, $this->matches);
+        return call_user_func_array($this->callback, [$request]);
     }
 
     /**

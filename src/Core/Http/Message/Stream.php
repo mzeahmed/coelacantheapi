@@ -8,7 +8,6 @@ class Stream implements StreamInterface
 {
     private $stream;
 
-
     public function __construct($stream)
     {
         if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
@@ -125,7 +124,7 @@ class Stream implements StreamInterface
 
         $meta = stream_get_meta_data($this->stream);
 
-        return !$meta['eof'] && $meta['mode'][0] === 'w';
+        return isset($meta['mode']) && $meta['mode'][0] === 'w';
     }
 
     public function write(string $string): int
@@ -155,7 +154,7 @@ class Stream implements StreamInterface
 
         $meta = stream_get_meta_data($this->stream);
 
-        return !$meta['eof'] && $meta['mode'][0] === 'r';
+        return isset($meta['mode']) && $meta['mode'][0] === 'r';
     }
 
     public function read(int $length): string

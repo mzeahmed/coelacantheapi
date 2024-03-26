@@ -1,23 +1,17 @@
 <?php
 
-namespace App\Core\Http;
+declare(strict_types=1);
 
-class Response
+namespace App\Core\Abstracts;
+
+abstract class AbstractController
 {
-    /**
-     * Sends a JSON response to the client.
-     *
-     * @param array $data The data to send in the response.
-     * @param int $status The HTTP status code to send.
-     *
-     * @return void
-     * @throws \JsonException
-     */
-    public static function sendJson(array $data, int $status = 200): void
+    protected function json(array $data, int $status = 200): void
     {
         self::setCorsHeaders();
 
         http_response_code($status);
+
         echo json_encode($data, JSON_THROW_ON_ERROR);
         exit();
     }
