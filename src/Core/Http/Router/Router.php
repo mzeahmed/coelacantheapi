@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Core\Http\Router;
 
-use App\Core\Exceptions\RouterException;
 use DI\Container;
+use App\Core\Http\Message\Uri;
+use App\Core\Http\Message\Stream;
+use App\Core\Http\Message\Request;
+use App\Core\Exceptions\RouterException;
 
 /**
  * Class Router
@@ -18,9 +21,9 @@ use DI\Container;
 class Router
 {
     /**
-     * @var string $url The requested URL.
+     * @var Request $request The request object.
      */
-    private string $url;
+    private Request $request;
 
     /**
      * @var array $routes The registered routes.
@@ -37,9 +40,13 @@ class Router
      */
     private array $namedRoutes = [];
 
-    public function __construct(string $url, Container $container)
+    public function __construct(Container $container)
     {
-        $this->url = $url;
+        $this->request = new Request($_SERVER['REQUEST_METHOD'],
+            new Uri($_SERVER['REQUEST_URI']),
+            getallheaders(),
+            new Stream(fopen('php://input', 'rb'))
+        );
         $this->container = $container;
     }
 
@@ -80,13 +87,16 @@ class Router
      */
     public function run(): mixed
     {
-        if (!isset($this->routes[$_SERVER['REQUEST_METHOD']])) {
-            throw new RouterException('REQUEST_METHOD does not exist');
+        $method = $this->request->getMethod();
+        $path = $this->request->getUri()->getPath();
+
+        if (!isset($this->routes[$method])) {
+            throw new RouterException('Method does not exist');
         }
 
-        foreach ($this->routes[$_SERVER['REQUEST_METHOD']] as $route) {
-            if ($route->match($this->url)) {
-                return $route->call();
+        foreach ($this->routes[$method] as $route) {
+            if ($route->match($path)) {
+                return $route->call($this->request);
             }
         }
 

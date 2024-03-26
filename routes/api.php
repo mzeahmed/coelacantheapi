@@ -13,7 +13,7 @@ try {
 
 \App\Core\Container::setContainer($container);
 
-$router = new \App\Core\Http\Router\Router($_GET['url'], $container);
+$router = new \App\Core\Http\Router\Router($container);
 
 $router->get(API_BASE_SLUG . '/', function () {
     echo 'Welcome to Coelacanthe API v1';

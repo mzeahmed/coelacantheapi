@@ -52,8 +52,7 @@ class JWT
 
         return [
             'token' => $encodedToken,
-            'user_email' => $user['email'],
-            'user_login' => $user['login'],
+            'user_id' => $user['id']
         ];
     }
 
