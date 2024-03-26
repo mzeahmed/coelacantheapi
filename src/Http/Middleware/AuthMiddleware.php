@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Core\Http\Message\Request;
 use App\Core\Interfaces\MiddlewareInterface;
 
 class AuthMiddleware implements MiddlewareInterface
 {
-    public function handle($request, $response, callable $next)
+    public function handle(Request $request, callable $next): callable
     {
         if (empty($request->getHeader('Authorization'))) {
-            return $response->withStatus(401);
+            // die('Unauthorized');
+            echo 'Unauthorized' . '<br>';
         }
 
-        return $next($request, $response);
+        return $next;
     }
 }

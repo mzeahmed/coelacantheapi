@@ -14,6 +14,7 @@ try {
 \App\Core\Container::setContainer($container);
 
 $router = new \App\Core\Http\Router\Router($container);
+$router->addMiddleware(new \App\Http\Middleware\AuthMiddleware());
 
 $router->get(API_BASE_SLUG . '/', function () {
     echo 'Welcome to Coelacanthe API v1';

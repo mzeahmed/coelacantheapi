@@ -8,7 +8,9 @@ use DI\Container;
 use App\Core\Http\Message\Uri;
 use App\Core\Http\Message\Stream;
 use App\Core\Http\Message\Request;
+use App\Core\Http\Message\Response;
 use App\Core\Exceptions\RouterException;
+use App\Core\Interfaces\MiddlewareInterface;
 
 /**
  * Class Router
@@ -40,6 +42,11 @@ class Router
      */
     private array $namedRoutes = [];
 
+    /**
+     * @var array $middlewares The registered middlewares.
+     */
+    private array $middlewares = [];
+
     public function __construct(Container $container)
     {
         $this->request = new Request($_SERVER['REQUEST_METHOD'],
@@ -48,6 +55,18 @@ class Router
             new Stream(fopen('php://input', 'rb'))
         );
         $this->container = $container;
+    }
+
+    /**
+     * Adds a middleware to the stack.
+     *
+     * @param MiddlewareInterface $middleware
+     *
+     * @return void
+     */
+    public function addMiddleware(MiddlewareInterface $middleware): void
+    {
+        $this->middlewares[] = $middleware;
     }
 
     /**
@@ -87,20 +106,33 @@ class Router
      */
     public function run(): mixed
     {
-        $method = $this->request->getMethod();
-        $path = $this->request->getUri()->getPath();
+        $request = $this->request;
 
-        if (!isset($this->routes[$method])) {
-            throw new RouterException('Method does not exist');
-        }
+        try {
+            $path = $request->getUri()->getPath();
 
-        foreach ($this->routes[$method] as $route) {
-            if ($route->match($path)) {
-                return $route->call($this->request);
+            foreach ($this->routes[$request->getMethod()] as $route) {
+                if ($route->match($path)) {
+                    foreach ($this->middlewares as $middleware) {
+                        $response = $middleware->handle($request, function () use ($route, $request) {
+                            return $route->call($request);
+                        });
+                    }
+
+                    return $route->call($request);
+                }
             }
-        }
 
-        throw new RouterException('No matching routes');
+            throw new RouterException('No matching routes');
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+
+            return new Response(
+                new Stream(fopen('php://temp', 'rb+')),
+                404,
+                []
+            );
+        }
     }
 
     /**
