@@ -9,15 +9,15 @@ use App\Repository\UsersRepository;
 
 class UserService
 {
-    private UsersRepository $usersRepo;
+    private UsersRepository $repo;
 
-    public function __construct(UsersRepository $usersRepo)
+    public function __construct(UsersRepository $repo)
     {
-        $this->usersRepo = $usersRepo;
+        $this->repo = $repo;
     }
 
     public function getUser(int $id): ?User
     {
-        return $this->usersRepo->findOneBy(['id' => $id]);
+        return $this->repo->findOneBy(['id' => $id]);
     }
 }

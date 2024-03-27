@@ -21,16 +21,6 @@ class Container
     private static DIContainer $container;
 
     /**
-     * Sets the dependency injection container instance.
-     *
-     * @param DIContainer $container The dependency injection container instance.
-     */
-    public static function setContainer(DIContainer $container): void
-    {
-        self::$container = $container;
-    }
-
-    /**
      * Retrieves an instance of the specified class from the dependency injection container.
      *
      * @param string $class The class name for which the instance is requested.
@@ -66,6 +56,17 @@ class Container
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
+
         self::setContainer($container);
+    }
+
+    /**
+     * Sets the dependency injection container instance.
+     *
+     * @param DIContainer $container The dependency injection container instance.
+     */
+    private static function setContainer(DIContainer $container): void
+    {
+        self::$container = $container;
     }
 }

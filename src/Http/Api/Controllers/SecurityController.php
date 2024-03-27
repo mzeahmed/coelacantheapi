@@ -10,11 +10,6 @@ use App\Core\Http\Security\Authentication;
 
 class SecurityController
 {
-    /**
-     * Login a user
-     *
-     * @throws \JsonException
-     */
     public function login(Request $request): void
     {
         $body = $request->getBody();
@@ -33,9 +28,6 @@ class SecurityController
         JSON::sendSuccess(['json' => $data]);
     }
 
-    /**
-     * Logout a user
-     */
     public function logout(Request $request): void
     {
         $headers = $request->getHeaders();

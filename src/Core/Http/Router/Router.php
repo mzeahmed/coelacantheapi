@@ -53,6 +53,7 @@ class Router
             $headers,
             new Stream(fopen('php://input', 'rb'))
         );
+
         $this->container = $container;
     }
 

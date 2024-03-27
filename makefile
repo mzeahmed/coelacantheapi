@@ -60,3 +60,8 @@ clear-cache: ## Clear Doctrine cache
 	@php ./bin/doctrine orm:clear-cache:query
 	@php ./bin/doctrine orm:clear-cache:result
 	@echo "$(YELLOW)Doctrine cache cleared$(NO_COLOR)"
+
+phpunit: ## Run PHPUnit tests
+	@echo "$(YELLOW)Running PHPUnit tests$(NO_COLOR)"
+	@php ./vendor/bin/phpunit tests
+	@echo "$(YELLOW)PHPUnit tests done$(NO_COLOR)"
