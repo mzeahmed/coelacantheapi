@@ -13,23 +13,28 @@ class AuthMiddleware implements MiddlewareInterface
 {
     public function handle(Request $request, callable $next): callable
     {
-        if (empty($request->getHeader('Authorization'))) {
-            JSON::sendError(['message' => 'Yo must to be logged in'], 401);
+        if ($request->getHeader('Authorization') !== null) {
+            $header = $request->getHeader('Authorization');
+
+            if (isset($header['Authorization'])) {
+                [$token] = sscanf($header['Authorization'], 'Bearer %s');
+
+                $decoded = JWT::decodeToken($token);
+                $iss = $decoded->iss;
+
+                if ($iss !== API_URL) {
+                    JSON::sendError(['message' => 'The issuer do not match with the server'], 403);
+                }
+
+                if (!isset($decoded->data->user->id)) {
+                    JSON::sendError(['message' => 'User id not found in token'], 403);
+                }
+
+                return $next;
+            }
         }
 
-        $header = $request->getHeader('Authorization');
-        [$token] = sscanf($header['Authorization'], 'Bearer %s');
-
-        $decoded = JWT::decodeToken($token);
-        $iss = $decoded->iss;
-
-        if ($iss !== API_URL) {
-            JSON::sendError(['message' => 'The issuer do not match with the server'], 403);
-        }
-
-        if (!isset($decoded->data->user->id)) {
-            JSON::sendError(['message' => 'User id not found in token'], 403);
-        }
+        JSON::sendError(['message' => 'You must be authenticated'], 401);
 
         return $next;
     }

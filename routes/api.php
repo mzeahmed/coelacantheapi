@@ -25,6 +25,7 @@ $router
     ->addMiddleware(new \App\Http\Middleware\AuthMiddleware());
 
 $router->post(API_BASE_SLUG . '/login', 'App\Http\Api\Controllers\SecurityController@login');
+$router->post(API_BASE_SLUG . '/logout', 'App\Http\Api\Controllers\SecurityController@logout');
 
 try {
     $router->run();

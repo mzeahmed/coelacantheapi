@@ -32,4 +32,24 @@ class SecurityController
 
         JSON::sendSuccess(['json' => $data]);
     }
+
+    /**
+     * Logout a user
+     */
+    public function logout(Request $request): void
+    {
+        $headers = $request->getHeaders();
+
+        if (empty($headers)) {
+            JSON::sendError(['message' => 'The headers are empty'], 500);
+        }
+
+        $bearer = $headers['Authorization'] ?? '';
+
+        if ($bearer) {
+            JSON::sendSuccess(['message' => 'User successfully logged out', 'token' => '']);
+        }
+
+        JSON::sendError(['message' => 'You are not authenticated'], 401);
+    }
 }
