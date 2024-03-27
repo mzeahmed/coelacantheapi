@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Core\Database\Connector\DoctrineConnector;
-
 class Bootstrap
 {
     private static ?self $instance = null;
@@ -30,7 +28,5 @@ class Bootstrap
 
         $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__DIR__));
         $dotenv->load();
-
-        new DoctrineConnector();
     }
 }
