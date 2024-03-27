@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Entity\User;
+use DI\ContainerBuilder;
 use DI\NotFoundException;
 use DI\DependencyException;
 use DI\Container as DIContainer;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Core\Database\Connector\DoctrineConnector;
 
 class Container
 {
@@ -39,5 +44,28 @@ class Container
         } catch (DependencyException|NotFoundException $e) {
             die($e->getMessage());
         }
+    }
+
+    public static function initializeContainer(&$container): void
+    {
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->useAutowiring(true);
+        $containerBuilder->useAttributes(false);
+
+        $entityManager = DoctrineConnector::getEntityManager();
+
+        $containerBuilder->addDefinitions([
+            EntityManagerInterface::class => $entityManager,
+            ClassMetadata::class => function () use ($entityManager) {
+                return $entityManager->getClassMetadata(User::class);
+            },
+        ]);
+
+        try {
+            $container = $containerBuilder->build();
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+        self::setContainer($container);
     }
 }

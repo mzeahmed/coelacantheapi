@@ -48,3 +48,10 @@ rem: ## Remove a dependency with composer | make rem p=vendor/package
 	@echo "$(RED)Remove the dependency $(BLUE)$(p)$(NO_COLOR)"
 	@composer remove $(p)
 	@echo "$(RED)Dependency $(BLUE)$(p)$(NO_COLOR) removed"
+
+clear-cache: ## Clear Doctrine cache
+	@echo "$(YELLOW)Clearing Doctrine cache$(NO_COLOR)"
+	@php ./bin/doctrine orm:clear-cache:metadata
+	@php ./bin/doctrine orm:clear-cache:query
+	@php ./bin/doctrine orm:clear-cache:result
+	@echo "$(YELLOW)Doctrine cache cleared$(NO_COLOR)"

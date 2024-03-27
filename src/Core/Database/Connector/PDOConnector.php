@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Database;
+namespace App\Core\Database\Connector;
 
-class DBConnector
+class PDOConnector
 {
     private ?\PDO $connection = null;
 

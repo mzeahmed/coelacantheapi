@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Core\Database;
 
+use App\Core\Database\Connector\PDOConnector;
+
 class Database
 {
-    private ?DBConnector $connector;
+    private ?PDOConnector $connector;
 
-    public function __construct(DBConnector $connector)
+    public function __construct(PDOConnector $connector)
     {
         $this->connector = $connector;
     }
@@ -41,7 +43,7 @@ class Database
     {
         $columns = implode(',', array_keys($data));
         $values = implode(',', array_map(static function ($value) {
-            return is_string($value) ? "'{$value}'" : (int)$value;
+            return is_string($value) ? "'{$value}'" : (int) $value;
         }, $data));
 
         $query = "INSERT INTO $tableName ($columns) VALUES ($values)";
@@ -61,11 +63,11 @@ class Database
     public function update(string $tableName, array $data, array $where): int|bool
     {
         $set = implode(',', array_map(static function ($value, $key) {
-            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int)$value);
+            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int) $value);
         }, $data, array_keys($data)));
 
         $whereClause = implode(' AND ', array_map(static function ($value, $key) {
-            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int)$value);
+            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int) $value);
         }, $where, array_keys($where)));
 
         $query = "UPDATE $tableName SET $set WHERE $whereClause";
@@ -85,7 +87,7 @@ class Database
     public function delete(string $tableName, array $where): bool
     {
         $whereClause = implode(' AND ', array_map(static function ($value, $key) {
-            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int)$value);
+            return "{$key} = " . (is_string($value) ? "'{$value}'" : (int) $value);
         }, $where, array_keys($where)));
 
         $query = "DELETE FROM $tableName WHERE $whereClause";
@@ -100,7 +102,7 @@ class Database
 
     public function lastInsertId(): int
     {
-        return (int)$this->getPDO()?->lastInsertId();
+        return (int) $this->getPDO()?->lastInsertId();
     }
 
     public function execute(string $query, array $params = []): bool

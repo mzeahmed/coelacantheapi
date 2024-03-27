@@ -3,15 +3,8 @@
 $start = microtime(true);
 
 $container = null;
-$containerBuilder = new \DI\ContainerBuilder();
 
-try {
-    $container = $containerBuilder->build();
-} catch (Exception $e) {
-    echo $e->getMessage();
-}
-
-\App\Core\Container::setContainer($container);
+\App\Core\Container::initializeContainer($container);
 
 $router = new \App\Core\Http\Router\Router($container);
 

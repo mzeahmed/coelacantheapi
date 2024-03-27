@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Core\Http\Security;
 
 use App\Core\Container;
-use App\Core\Helpers\JSON;
 use App\Core\Helpers\JWT;
+use App\Core\Helpers\JSON;
 use App\Repository\UsersRepository;
 
 class Authentication
@@ -20,7 +20,7 @@ class Authentication
             JSON::sendError(['message' => 'User not found'], 404);
         }
 
-        if (password_verify($password, $user['password'])) {
+        if (password_verify($password, $user->getPassword())) {
             $token = JWT::generateToken($user);
 
             if ($token) {

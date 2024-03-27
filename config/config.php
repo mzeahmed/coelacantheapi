@@ -32,4 +32,6 @@ define('JWT_AUTH_SECRET_KEY', env('JWT_AUTH_SECRET_KEY'));
 define('API_URL', env('API_URL'));
 define('API_BASE_SLUG', '/api/v1');
 
+define('IS_DEV_MODE', env('IS_DEV_MODE'));
+
 require_once ROOT_PATH . '/routes/api.php';

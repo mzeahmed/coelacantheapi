@@ -41,12 +41,16 @@ class Router
      */
     private array $namedRoutes = [];
 
-    public function __construct(Container $container)
+    public function __construct(?Container $container)
     {
+        $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+        $headers = function_exists('getallheaders') ? getallheaders() : [];
+
         $this->request = new Request(
-            $_SERVER['REQUEST_METHOD'],
-            new Uri($_SERVER['REQUEST_URI']),
-            getallheaders(),
+            $requestMethod,
+            new Uri($requestUri),
+            $headers,
             new Stream(fopen('php://input', 'rb'))
         );
         $this->container = $container;
