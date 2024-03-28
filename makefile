@@ -63,5 +63,5 @@ clear-cache: ## Clear Doctrine cache
 
 phpunit: ## Run PHPUnit tests
 	@echo "$(YELLOW)Running PHPUnit tests$(NO_COLOR)"
-	@php ./vendor/bin/phpunit tests
+	@php ./vendor/bin/phpunit
 	@echo "$(YELLOW)PHPUnit tests done$(NO_COLOR)"

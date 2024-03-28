@@ -1,8 +1,8 @@
 <?php
 
-use function Env\env;
+use Dotenv\Dotenv;
 
-define('ROOT_PATH', dirname(__DIR__));
+use function Env\env;
 
 /**
  * Use Dotenv to set required environment variables and load .env file in root
@@ -12,7 +12,7 @@ if (file_exists(ROOT_PATH . '/.env')) {
         ? ['.env', '.env.local']
         : ['.env'];
 
-    $dotenv = \Dotenv\Dotenv::createUnsafeImmutable(ROOT_PATH, $envFiles, false);
+    $dotenv = Dotenv::createUnsafeImmutable(ROOT_PATH, $envFiles, false);
 
     $dotenv->load();
 
