@@ -17,6 +17,32 @@ class UsersController
         $this->userService = $userService;
     }
 
+    public function index(Request $request): void
+    {
+        $users = $this->userService->getUsers();
+
+        if (!$users) {
+            JSON::sendError(['message' => 'No users found'], 404);
+        }
+
+        $data = [];
+
+        foreach ($users as $user) {
+            $data[] = [
+                'id' => $user->getId(),
+                'login' => $user->getLogin(),
+                'email' => $user->getEmail(),
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+                'created_at' => $user->getCreatedAt(),
+                'updated_at' => $user->getUpdatedAt(),
+                'last_login' => $user->getLastLogin(),
+            ];
+        }
+
+        JSON::sendSuccess($data);
+    }
+
     public function show(Request $request): void
     {
         $uri = $request->getUri();
@@ -34,6 +60,8 @@ class UsersController
             'id' => $user->getId(),
             'login' => $user->getLogin(),
             'email' => $user->getEmail(),
+            'first_name' => $user->getFirstName(),
+            'last_name' => $user->getLastName(),
             'created_at' => $user->getCreatedAt(),
             'updated_at' => $user->getUpdatedAt(),
             'last_login' => $user->getLastLogin(),

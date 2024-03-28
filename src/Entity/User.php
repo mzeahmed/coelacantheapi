@@ -9,6 +9,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[Entity]
 #[Table(name: 'users')]
@@ -27,6 +30,9 @@ class User
     #[Column(type: Types::STRING, nullable: false)]
     private string $password;
 
+    #[OneToMany(targetEntity: Usermeta::class, mappedBy: 'user')]
+    private Collection $usermetas;
+
     #[Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE, nullable: false)]
     private \DateTimeImmutable $createdAt;
 
@@ -38,6 +44,11 @@ class User
 
     #[Column(name: '2fa_token', type: Types::STRING, nullable: true)]
     private ?string $two_fa_token = null;
+
+    public function __construct()
+    {
+        $this->usermetas = new ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -66,6 +77,46 @@ class User
         $this->email = $email;
 
         return $this;
+    }
+
+    public function getUsermetas(): Collection
+    {
+        return $this->usermetas;
+    }
+
+    public function addUsermeta(Usermeta $usermeta): self
+    {
+        if (!$this->usermetas->contains($usermeta)) {
+            $this->usermetas[] = $usermeta;
+            $usermeta->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsermeta(Usermeta $usermeta): self
+    {
+        if ($this->usermetas->removeElement($usermeta)
+            && $usermeta->getUser() === $this) {
+            $usermeta->setUser(null);
+        }
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->getMetaValueByKey('firstname');
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->getMetaValueByKey('lastname');
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
     public function setPassword(string $password): self
@@ -126,5 +177,16 @@ class User
         $this->two_fa_token = $two_fa_token;
 
         return $this;
+    }
+
+    private function getMetaValueByKey(string $key): ?string
+    {
+        foreach ($this->usermetas as $usermeta) {
+            if ($usermeta->getMetaKey() === $key) {
+                return $usermeta->getMetaValue();
+            }
+        }
+
+        return null;
     }
 }

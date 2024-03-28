@@ -16,6 +16,11 @@ class UserService
         $this->repo = $repo;
     }
 
+    public function getUsers(): array
+    {
+        return $this->repo->findAll();
+    }
+
     public function getUser(int $id): ?User
     {
         return $this->repo->findOneBy(['id' => $id]);

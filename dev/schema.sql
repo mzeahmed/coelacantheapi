@@ -7,6 +7,24 @@ CREATE TABLE IF NOT EXISTS users
     created_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP    DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
     last_login TIMESTAMP    DEFAULT '0000-00-00 00:00:00',
-    2fa_token  VARCHAR(255) DEFAULT NULL
+    2fa_token  VARCHAR(255) DEFAULT NULL,
+    INDEX (login),
+    INDEX (email),
+    INDEX (created_at),
+    CONSTRAINT unique_login UNIQUE (login),
+    CONSTRAINT unique_email UNIQUE (email)
+) DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_520_ci;
+
+CREATE TABLE usermeta
+(
+    id         INT PRIMARY KEY AUTO_INCREMENT,
+    user_id    INT          NOT NULL,
+    meta_key   VARCHAR(255) NULL,
+    meta_value LONGTEXT     NULL,
+    INDEX (user_id),
+    INDEX (meta_key),
+    CONSTRAINT fk_usermeta_user_id
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 ) DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_520_ci;

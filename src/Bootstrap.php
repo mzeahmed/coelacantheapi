@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App;
 
+use Dotenv\Dotenv;
+
 class Bootstrap
 {
     private static ?self $instance = null;
@@ -26,7 +28,7 @@ class Bootstrap
     {
         require_once dirname(__DIR__) . '/config/config.php';
 
-        $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+        $dotenv = Dotenv::createImmutable(dirname(__DIR__));
         $dotenv->load();
     }
 }
