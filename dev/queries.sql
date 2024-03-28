@@ -10,4 +10,6 @@ VALUES (1, 'firstname', 'John'),
        (2, 'firstname', 'Jane'),
        (2, 'lastname', 'Doe'),
        (3, 'firstname', 'John'),
-       (3, 'lastname', 'Smith');
+       (3, 'lastname', 'Smith'),
+       (1, 'birthdate', '1985-01-25 00:00:00'),
+       (2, 'birthdate', '1990-01-01 00:00:00');

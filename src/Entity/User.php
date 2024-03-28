@@ -119,6 +119,24 @@ class User
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
+    public function getBirthdate(): ?string
+    {
+        return $this->getMetaValueByKey('birthdate');
+    }
+
+    public function getAge(): ?int
+    {
+        $birthdate = $this->getBirthdate();
+
+        if ($birthdate === null) {
+            return null;
+        }
+
+        $now = new \DateTimeImmutable();
+
+        return $now->diff(new \DateTime($birthdate))->y;
+    }
+
     public function setPassword(string $password): self
     {
         $this->password = $password;

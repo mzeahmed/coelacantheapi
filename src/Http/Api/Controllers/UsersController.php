@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Api\Controllers;
 
+use App\Entity\User;
 use App\Core\Helpers\JSON;
 use App\Services\UserService;
 use App\Core\Http\Message\Request;
@@ -28,16 +29,7 @@ class UsersController
         $data = [];
 
         foreach ($users as $user) {
-            $data[] = [
-                'id' => $user->getId(),
-                'login' => $user->getLogin(),
-                'email' => $user->getEmail(),
-                'first_name' => $user->getFirstName(),
-                'last_name' => $user->getLastName(),
-                'created_at' => $user->getCreatedAt(),
-                'updated_at' => $user->getUpdatedAt(),
-                'last_login' => $user->getLastLogin(),
-            ];
+            $data[] = $this->userData($user);
         }
 
         JSON::sendSuccess($data);
@@ -56,7 +48,12 @@ class UsersController
             JSON::sendError(['message' => 'User not found'], 404);
         }
 
-        $data = [
+        JSON::sendSuccess($this->userData($user));
+    }
+
+    private function userData(User $user): array
+    {
+        return [
             'id' => $user->getId(),
             'login' => $user->getLogin(),
             'email' => $user->getEmail(),
@@ -65,8 +62,7 @@ class UsersController
             'created_at' => $user->getCreatedAt(),
             'updated_at' => $user->getUpdatedAt(),
             'last_login' => $user->getLastLogin(),
+            'age' => $user->getAge(),
         ];
-
-        JSON::sendSuccess($data);
     }
 }
