@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Helpers;
 
-use App\Entity\Users;
+use App\Entity\User;
 use Firebase\JWT\Key;
 use Firebase\JWT\JWT as FirebaseJWT;
 
@@ -25,7 +25,7 @@ class JWT
         'PS512',
     ];
 
-    public static function generateToken(Users $user): array|bool
+    public static function generateToken(User $user): array|bool
     {
         $secretKey = defined('JWT_AUTH_SECRET_KEY') ? JWT_AUTH_SECRET_KEY : false;
 

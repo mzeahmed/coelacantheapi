@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace App\Http\Api\Controllers;
 
-use App\Entity\Users;
+use App\Entity\User;
 use App\Core\Helpers\JSON;
 use App\Core\Helpers\Strings;
-use App\Services\UsersService;
+use App\Services\UserService;
 use App\Core\Http\Message\Request;
 use Doctrine\ORM\Exception\ORMException;
 use App\Core\Abstracts\AbstractController;
 
-class UsersController extends AbstractController
+class UserController extends AbstractController
 {
-    private UsersService $usersService;
+    private UserService $userService;
 
-    public function __construct(UsersService $userService)
+    public function __construct(UserService $userService)
     {
-        $this->usersService = $userService;
+        $this->userService = $userService;
     }
 
-    public function index(Request $request): void
+    public function index(): void
     {
-        $users = $this->usersService->getUsers();
+        $users = $this->userService->getUsers();
 
         if (!$users) {
             JSON::sendError(['message' => 'No users found'], 404);
@@ -45,7 +45,7 @@ class UsersController extends AbstractController
 
         $id = Strings::extractIdFromUrl('user', $path);
 
-        $user = $this->usersService->getUser((int) $id);
+        $user = $this->userService->getUser((int) $id);
 
         if (!$user) {
             JSON::sendError(['message' => 'User not found'], 404);
@@ -62,8 +62,8 @@ class UsersController extends AbstractController
         $email = $post['email'];
         $password = $post['password'];
 
-        $loginExists = $this->getEntityManager()->getRepository(Users::class)->findOneBy(['login' => $login]);
-        $emailExists = $this->getEntityManager()->getRepository(Users::class)->findOneBy(['email' => $email]);
+        $loginExists = $this->getEntityManager()->getRepository(User::class)->findOneBy(['login' => $login]);
+        $emailExists = $this->getEntityManager()->getRepository(User::class)->findOneBy(['email' => $email]);
 
         if ($loginExists) {
             JSON::sendError(['message' => sprintf('Login %s is already in use', $login)], 500);
@@ -73,7 +73,7 @@ class UsersController extends AbstractController
             JSON::sendError(['message' => sprintf('Email %s is already in use', $email)], 500);
         }
 
-        $user = $this->usersService->createUser($login, $email, $password, $this->getEntityManager());
+        $user = $this->userService->createUser($login, $email, $password, $this->getEntityManager());
 
         if (!$user) {
             JSON::sendError(['message' => 'Error creating user'], 500);
@@ -91,7 +91,7 @@ class UsersController extends AbstractController
 
         $data = $this->getRequestData($request);
 
-        $this->usersService->updateUser($id, $data, $this->getEntityManager());
+        $this->userService->updateUser($id, $data, $this->getEntityManager());
 
         JSON::sendSuccess(['message' => 'User updated successfully']);
     }
@@ -103,7 +103,7 @@ class UsersController extends AbstractController
 
         $id = Strings::extractIdFromUrl('delete', $path, false);
 
-        $user = $this->usersService->getUser((int) $id);
+        $user = $this->userService->getUser((int) $id);
 
         if (!$user) {
             JSON::sendError(['message' => 'User not found'], 404);

@@ -1,17 +1,17 @@
 #!/usr/bin/env php
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
-require dirname(__DIR__) . '/config/config.php';
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use App\Core\Database\Connector\DoctrineConnector;
+use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 
-$entityManager = \App\Core\Database\Connector\DoctrineConnector::getEntityManager();
+require dirname(__DIR__) . '/public/index.php';
+
+$entityManager = DoctrineConnector::getEntityManager();
 
 $commands = [
     // If you want to add your own custom console commands,
     // you can do so here.
 ];
 
-\Doctrine\ORM\Tools\Console\ConsoleRunner::run(
-    new \Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider($entityManager),
-    $commands
-);
+ConsoleRunner::run(new SingleManagerProvider($entityManager), $commands);

@@ -16,19 +16,10 @@ class DoctrineConnector
         $paths = [ROOT_PATH . '/src/Entity'];
         $connection = null;
 
-        $dbParams = [
-            'dbname' => DB_NAME,
-            'user' => DB_USER,
-            'password' => DB_PASSWORD,
-            'host' => DB_HOST,
-            'port' => DB_PORT,
-            'driver' => 'pdo_mysql',
-        ];
-
         $config = ORMSetup::createAttributeMetadataConfiguration($paths, IS_DEV_MODE);
 
         try {
-            $connection = DriverManager::getConnection($dbParams, $config);
+            $connection = DriverManager::getConnection(DB_PARAMS, $config);
         } catch (Exception $e) {
             echo "Connection failed: " . $e->getMessage();
         }

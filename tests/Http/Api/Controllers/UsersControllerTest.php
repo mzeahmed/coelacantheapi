@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-use App\Services\UsersService;
+use App\Services\UserService;
 use PHPUnit\Framework\TestCase;
 use App\Core\Http\Message\Request;
 use Psr\Http\Message\UriInterface;
-use App\Http\Api\Controllers\UsersController;
+use App\Http\Api\Controllers\UserController;
 
 class UsersControllerTest extends TestCase
 {
     public function testShow()
     {
-        $userService = $this->createMock(UsersService::class);
+        $userService = $this->createMock(UserService::class);
         $userService->method('getUser')->willReturn(null);
 
-        $controller = new UsersController($userService);
+        $controller = new UserController($userService);
 
         $uri = $this->createMock(UriInterface::class);
         $uri->method('getPath')->willReturn('/users/1');

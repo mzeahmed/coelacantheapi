@@ -4,53 +4,56 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\OneToMany;
-use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
 #[Entity]
 #[Table(name: 'users')]
-class Users
+class User
 {
-    #[Id]
-    #[GeneratedValue(strategy: 'AUTO')]
-    #[Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
     private int $id;
 
-    #[Column(type: Types::STRING, nullable: false)]
+    #[ORM\Column(type: Types::STRING, nullable: false)]
     private string $login;
 
-    #[Column(type: Types::STRING, nullable: false)]
+    #[ORM\Column(type: Types::STRING, nullable: false)]
     private string $email;
 
-    #[Column(type: Types::STRING, nullable: false)]
+    #[ORM\Column(type: Types::STRING, nullable: false)]
     private string $password;
 
-    #[OneToMany(targetEntity: Usermeta::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Usermeta::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
     private Collection $usermetas;
 
-    #[Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE, nullable: false)]
+    #[ORM\Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE, nullable: false)]
     private \DateTimeImmutable $createdAt;
 
-    #[Column(name: 'updated_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[Column(name: 'last_login', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[ORM\Column(name: 'last_login', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $lastLogin;
 
-    #[Column(name: '2fa_token', type: Types::STRING, nullable: true)]
+    #[ORM\Column(name: '2fa_token', type: Types::STRING, nullable: true)]
     private ?string $two_fa_token = null;
+
+    #[ORM\ManyToMany(targetEntity: Role::class)]
+    #[ORM\JoinTable(name: 'user_roles')]
+    private Collection $roles;
 
     public function __construct()
     {
         $this->usermetas = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): int
@@ -196,6 +199,27 @@ class Users
     public function setTwoFaToken(?string $two_fa_token): self
     {
         $this->two_fa_token = $two_fa_token;
+
+        return $this;
+    }
+
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        $this->roles->removeElement($role);
 
         return $this;
     }

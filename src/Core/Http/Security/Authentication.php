@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Http\Security;
 
-use App\Entity\Users;
+use App\Entity\User;
 use App\Core\Helpers\JWT;
 use App\Core\Helpers\JSON;
 use Doctrine\ORM\EntityManager;
@@ -14,7 +14,7 @@ class Authentication
 {
     public static function authenticate(string $username, string $password, EntityManager $manager): array|bool
     {
-        $user = $manager->getRepository(Users::class)->findOneBy(['login' => $username]);
+        $user = $manager->getRepository(User::class)->findOneBy(['login' => $username]);
 
         if (!$user) {
             JSON::sendError(['message' => 'User not found'], 404);

@@ -54,6 +54,12 @@ doctrine: ## Run Doctrine commands | make doctrine c=command
 	@php ./bin/doctrine $(c)
 	@echo "$(YELLOW)Doctrine command $(BLUE)$(c)$(NO_COLOR) done"
 
+migration : ## Create a new migration | make migration n=name (generate, diff, migrate, execute, status)
+	@echo "$(YELLOW)Creating a new migration $(BLUE)$(n)$(NO_COLOR)"
+	@#php ./bin/doctrine migrations:generate --configuration=./config/migrations-config.php --namespace=App\\Migrations --name=$(n)
+	@php ./bin/migration migrations:$(n)
+	@echo "$(YELLOW)Migration $(BLUE)$(n)$(NO_COLOR) created"
+
 clear-cache: ## Clear Doctrine cache
 	@echo "$(YELLOW)Clearing Doctrine cache$(NO_COLOR)"
 	@php ./bin/doctrine orm:clear-cache:metadata

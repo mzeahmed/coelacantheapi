@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Entity\Users;
+use App\Entity\User;
 use App\Core\Helpers\JSON;
 use Doctrine\ORM\EntityManager;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\Exception\ORMException;
 
-class UsersService
+class UserService
 {
     private UsersRepository $repo;
 
@@ -24,14 +24,14 @@ class UsersService
         return $this->repo->findAll();
     }
 
-    public function getUser(int $id): ?Users
+    public function getUser(int $id): ?User
     {
         return $this->repo->findOneBy(['id' => $id]);
     }
 
-    public function createUser(string $login, string $email, string $password, EntityManager $manager): bool|Users
+    public function createUser(string $login, string $email, string $password, EntityManager $manager): bool|User
     {
-        $user = new Users();
+        $user = new User();
 
         $password = password_hash($password, PASSWORD_BCRYPT);
 
@@ -51,7 +51,7 @@ class UsersService
 
     public function updateUser(int $id, array $data, EntityManager $manager): bool
     {
-        $user = $manager->getRepository(Users::class)->findOneBy(['id' => $id]);
+        $user = $manager->getRepository(User::class)->findOneBy(['id' => $id]);
 
         if (!$user) {
             JSON::sendError(['message' => 'User not found'], 404);
