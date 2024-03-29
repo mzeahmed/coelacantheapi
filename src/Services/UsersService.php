@@ -58,8 +58,6 @@ class UsersService
         }
 
         foreach ($data as $key => $value) {
-            // preg_match('#(\d+)_(\d+)#', $key, $matches);
-
             $keysArray = explode('_', $key);
 
             if (count($keysArray) > 1) {
@@ -71,12 +69,6 @@ class UsersService
             } else {
                 $method = 'set' . ucfirst($key);
             }
-
-            // if ($matches) {
-            //     $method = 'set' . ucfirst($matches[1]) . ucfirst($matches[2]);
-            // } else {
-            //     $method = 'set' . ucfirst($key);
-            // }
 
             if (method_exists($user, $method)) {
                 $user->$method($value);

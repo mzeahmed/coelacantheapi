@@ -77,46 +77,24 @@ class Router
         }
     }
 
-    /**
-     * Registers a GET route.
-     *
-     * @param string $path The path of the route.
-     * @param mixed $callback The callback to be executed when the route is matched.
-     * @param string|null $name The name of the route.
-     *
-     * @return Route The created route.
-     */
     public function get(string $path, mixed $callback, string $name = null): Route
     {
         return $this->add($path, $callback, $name, 'GET');
     }
 
-    /**
-     * Registers a POST route.
-     *
-     * @param string $path The path of the route.
-     * @param mixed $callback The callback to be executed when the route is matched.
-     * @param string|null $name The name of the route.
-     *
-     * @return Route The created route.
-     */
     public function post(string $path, mixed $callback, string $name = null): Route
     {
         return $this->add($path, $callback, $name, 'POST');
     }
 
-    /**
-     * Registers a PUT route.
-     *
-     * @param string $path The path of the route.
-     * @param mixed $callback The callback to be executed when the route is matched.
-     * @param string|null $name The name of the route.
-     *
-     * @return Route The created route.
-     */
     public function put(string $path, mixed $callback, string $name = null): Route
     {
         return $this->add($path, $callback, $name, 'PUT');
+    }
+
+    public function delete(string $path, mixed $callback, string $name = null): Route
+    {
+        return $this->add($path, $callback, $name, 'DELETE');
     }
 
     /**
