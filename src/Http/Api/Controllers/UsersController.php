@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Api\Controllers;
 
-use App\Entity\User;
+use App\Entity\Users;
 use App\Core\Helpers\JSON;
-use App\Services\UserService;
+use App\Core\Helpers\Strings;
+use App\Services\UsersService;
 use App\Core\Http\Message\Request;
+use App\Core\Abstracts\AbstractController;
 
-class UsersController
+class UsersController extends AbstractController
 {
-    private UserService $userService;
+    private UsersService $userService;
 
-    public function __construct(UserService $userService)
+    public function __construct(UsersService $userService)
     {
         $this->userService = $userService;
     }
@@ -29,10 +31,56 @@ class UsersController
         $data = [];
 
         foreach ($users as $user) {
-            $data[] = $this->userData($user);
+            $data[] = $user->userData();
         }
 
         JSON::sendSuccess($data);
+    }
+
+    public function create(Request $request): void
+    {
+        $post = $this->getRequestData($request);
+
+        $login = $post['login'];
+        $email = $post['email'];
+        $password = $post['password'];
+
+        $loginExists = $this->getEntityManager()->getRepository(Users::class)->findOneBy(['login' => $login]);
+        $emailExists = $this->getEntityManager()->getRepository(Users::class)->findOneBy(['email' => $email]);
+
+        if ($loginExists) {
+            JSON::sendError(['message' => sprintf('Login %s is already in use', $login)], 500);
+        }
+
+        if ($emailExists) {
+            JSON::sendError(['message' => sprintf('Email %s is already in use', $email)], 500);
+        }
+
+        $user = $this->userService->createUser($login, $email, $password, $this->getEntityManager());
+
+        if (!$user) {
+            JSON::sendError(['message' => 'Error creating user'], 500);
+        }
+
+        JSON::sendSuccess(['message' => sprintf('User %s created successfully', $login)]);
+    }
+
+    public function update(Request $request): void
+    {
+        $uri = $request->getUri();
+        $path = $uri->getPath();
+
+        $id = Strings::extractIdFromUrl('update', $path, false);
+
+        $data = $this->getRequestData($request);
+
+        $update = $this->userService->updateUser($id, $data, $this->getEntityManager());
+
+        if (!$update) {
+            JSON::sendError(['message' => 'Error updating user'], 500);
+        }
+
+        JSON::sendSuccess(['message' => 'User updated successfully']);
     }
 
     public function show(Request $request): void
@@ -40,29 +88,15 @@ class UsersController
         $uri = $request->getUri();
         $path = $uri->getPath();
 
-        $id = (int) basename($path);
+        $id = Strings::extractIdFromUrl('user', $path);
 
-        $user = $this->userService->getUser($id);
+        $user = $this->userService->getUser((int) $id);
 
         if (!$user) {
             JSON::sendError(['message' => 'User not found'], 404);
         }
 
-        JSON::sendSuccess($this->userData($user));
+        JSON::sendSuccess($user->userData());
     }
 
-    private function userData(User $user): array
-    {
-        return [
-            'id' => $user->getId(),
-            'login' => $user->getLogin(),
-            'email' => $user->getEmail(),
-            'first_name' => $user->getFirstName(),
-            'last_name' => $user->getLastName(),
-            'created_at' => $user->getCreatedAt(),
-            'updated_at' => $user->getUpdatedAt(),
-            'last_login' => $user->getLastLogin(),
-            'age' => $user->getAge(),
-        ];
-    }
 }

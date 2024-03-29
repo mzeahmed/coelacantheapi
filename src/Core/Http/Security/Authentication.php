@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Core\Http\Security;
 
-use App\Core\Container;
+use App\Entity\Users;
 use App\Core\Helpers\JWT;
 use App\Core\Helpers\JSON;
-use App\Repository\UsersRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Exception\ORMException;
 
 class Authentication
 {
-    public static function authenticate(string $username, string $password): array|bool
+    public static function authenticate(string $username, string $password, EntityManager $manager): array|bool
     {
-        $repo = Container::getContainer(UsersRepository::class);
-        $user = $repo->findOneBy(['login' => $username]);
+        $user = $manager->getRepository(Users::class)->findOneBy(['login' => $username]);
 
         if (!$user) {
             JSON::sendError(['message' => 'User not found'], 404);
@@ -24,6 +24,14 @@ class Authentication
             $token = JWT::generateToken($user);
 
             if ($token) {
+                $user->setLastLogin(new \DateTimeImmutable());
+                try {
+                    $manager->persist($user);
+                    $manager->flush();
+                } catch (\Exception|ORMException $e) {
+                    JSON::sendError(['message' => 'Error updating user => ' . $e->getMessage()], 500);
+                }
+
                 return $token;
             }
 

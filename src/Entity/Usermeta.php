@@ -20,9 +20,9 @@ class Usermeta
     #[Id]
     private int $id;
 
-    #[ManyToOne(targetEntity: User::class, inversedBy: 'usermetas')]
+    #[ManyToOne(targetEntity: Users::class, inversedBy: 'usermetas')]
     #[JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    private User $user;
+    private Users $user;
 
     #[Column(name: 'meta_key', type: Types::STRING, nullable: false)]
     private ?string $metaKey;
@@ -35,12 +35,12 @@ class Usermeta
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getUser(): Users
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): ?self
+    public function setUser(?Users $user): ?self
     {
         $this->user = $user;
 

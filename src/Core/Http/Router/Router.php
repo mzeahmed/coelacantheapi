@@ -106,6 +106,20 @@ class Router
     }
 
     /**
+     * Registers a PUT route.
+     *
+     * @param string $path The path of the route.
+     * @param mixed $callback The callback to be executed when the route is matched.
+     * @param string|null $name The name of the route.
+     *
+     * @return Route The created route.
+     */
+    public function put(string $path, mixed $callback, string $name = null): Route
+    {
+        return $this->add($path, $callback, $name, 'PUT');
+    }
+
+    /**
      *  Handles the request by matching the requested URL with the registered routes.
      *
      * @return mixed The result of the route's callback.

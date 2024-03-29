@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Services\UserService;
+use App\Services\UsersService;
 use PHPUnit\Framework\TestCase;
 use App\Core\Http\Message\Request;
 use Psr\Http\Message\UriInterface;
@@ -12,7 +12,7 @@ class UsersControllerTest extends TestCase
 {
     public function testShow()
     {
-        $userService = $this->createMock(UserService::class);
+        $userService = $this->createMock(UsersService::class);
         $userService->method('getUser')->willReturn(null);
 
         $controller = new UsersController($userService);

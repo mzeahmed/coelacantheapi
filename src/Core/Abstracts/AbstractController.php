@@ -4,26 +4,32 @@ declare(strict_types=1);
 
 namespace App\Core\Abstracts;
 
+use Doctrine\ORM\EntityManager;
+use App\Core\Http\Message\Request;
+use App\Core\Database\Connector\DoctrineConnector;
+
 abstract class AbstractController
 {
-    protected function json(array $data, int $status = 200): void
+    protected function getEntityManager(): EntityManager
     {
-        self::setCorsHeaders();
-
-        http_response_code($status);
-
-        echo json_encode($data, JSON_THROW_ON_ERROR);
-        exit();
+        return DoctrineConnector::getEntityManager();
     }
 
-    private static function setCorsHeaders(): void
+    protected function getRequestData(Request $request): array
     {
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
-        header("Access-Control-Max-Age: 3600");
-        header(
-            "Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-        );
+        $body = $request->getBody();
+        $contents = $body->getContents();
+
+        if (empty($contents)) {
+            throw new \RuntimeException('Error : The request body is empty');
+        }
+        
+        try {
+            $data = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Error : ' . $e->getMessage());
+        }
+
+        return $data;
     }
 }

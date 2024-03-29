@@ -7,19 +7,18 @@ namespace App\Http\Api\Controllers;
 use App\Core\Helpers\JSON;
 use App\Core\Http\Message\Request;
 use App\Core\Http\Security\Authentication;
+use App\Core\Abstracts\AbstractController;
 
-class SecurityController
+class SecurityController extends AbstractController
 {
     public function login(Request $request): void
     {
-        $body = $request->getBody();
-        $contents = $body->getContents();
-        $post = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        $post = $this->getRequestData($request);
 
         $login = $post['login'];
         $password = $post['password'];
 
-        $data = Authentication::authenticate($login, $password);
+        $data = Authentication::authenticate($login, $password, $this->getEntityManager());
 
         if (!$data) {
             JSON::sendError(['message' => 'Invalid credentials'], 401);

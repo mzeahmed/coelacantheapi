@@ -13,11 +13,18 @@ $router->get(API_BASE_SLUG . '/', function () {
 });
 
 $router
-    ->get(API_BASE_SLUG . '/users/:id', 'App\Http\Api\Controllers\UsersController@show')
+    ->get(API_BASE_SLUG . '/user/:id', 'App\Http\Api\Controllers\UsersController@show')
     ->with('id', '[0-9]+')
     ->addMiddleware(new \App\Http\Middleware\AuthMiddleware());
 $router
     ->get(API_BASE_SLUG . '/users', 'App\Http\Api\Controllers\UsersController@index')
+    ->addMiddleware(new \App\Http\Middleware\AuthMiddleware());
+$router
+    ->post(API_BASE_SLUG . '/user/create', 'App\Http\Api\Controllers\UsersController@create')
+    ->addMiddleware(new \App\Http\Middleware\NotAuthMiddleware());
+$router
+    ->put(API_BASE_SLUG . '/user/:id/update', 'App\Http\Api\Controllers\UsersController@update')
+    ->with('id', '[0-9]+')
     ->addMiddleware(new \App\Http\Middleware\AuthMiddleware());
 
 $router->post(API_BASE_SLUG . '/login', 'App\Http\Api\Controllers\SecurityController@login');

@@ -10,15 +10,17 @@ use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
 #[Entity]
 #[Table(name: 'users')]
-class User
+class Users
 {
-    #[Column(type: Types::INTEGER)]
     #[Id]
+    #[GeneratedValue(strategy: 'AUTO')]
+    #[Column(type: Types::INTEGER)]
     private int $id;
 
     #[Column(type: Types::STRING, nullable: false)]
@@ -36,11 +38,11 @@ class User
     #[Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE, nullable: false)]
     private \DateTimeImmutable $createdAt;
 
-    #[Column(name: 'updated_at', type: Types::DATETIME_IMMUTABLE, nullable: false)]
-    private \DateTimeImmutable $updatedAt;
+    #[Column(name: 'updated_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
-    #[Column(name: 'last_login', type: Types::DATETIME_IMMUTABLE, nullable: false)]
-    private \DateTimeImmutable $lastLogin;
+    #[Column(name: 'last_login', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $lastLogin;
 
     #[Column(name: '2fa_token', type: Types::STRING, nullable: true)]
     private ?string $two_fa_token = null;
@@ -48,6 +50,7 @@ class User
     public function __construct()
     {
         $this->usermetas = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): int
@@ -161,24 +164,24 @@ class User
         return $this;
     }
 
-    public function getUpdatedAt(): \DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getLastLogin(): \DateTimeImmutable
+    public function getLastLogin(): ?\DateTimeImmutable
     {
         return $this->lastLogin;
     }
 
-    public function setLastLogin(\DateTimeImmutable $lastLogin): self
+    public function setLastLogin(?\DateTimeImmutable $lastLogin): ?self
     {
         $this->lastLogin = $lastLogin;
 
@@ -195,6 +198,21 @@ class User
         $this->two_fa_token = $two_fa_token;
 
         return $this;
+    }
+
+    public function userData(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'login' => $this->getLogin(),
+            'email' => $this->getEmail(),
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt(),
+            'last_login' => $this->getLastLogin(),
+            'age' => $this->getAge(),
+        ];
     }
 
     private function getMetaValueByKey(string $key): ?string

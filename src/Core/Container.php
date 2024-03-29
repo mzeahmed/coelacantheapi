@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-use App\Entity\User;
+use App\Entity\Users;
 use DI\ContainerBuilder;
 use DI\NotFoundException;
 use DI\DependencyException;
@@ -47,7 +47,7 @@ class Container
         $containerBuilder->addDefinitions([
             EntityManagerInterface::class => $entityManager,
             ClassMetadata::class => function () use ($entityManager) {
-                return $entityManager->getClassMetadata(User::class);
+                return $entityManager->getClassMetadata(Users::class);
             },
         ]);
 
