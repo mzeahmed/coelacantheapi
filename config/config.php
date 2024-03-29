@@ -46,12 +46,13 @@ define('DB_PARAMS', [
     'dbname' => DB_NAME,
     'user' => DB_USER,
     'password' => DB_PASSWORD,
-    'host' => 'DB_HOST',
+    'host' => DB_HOST,
     'port' => DB_PORT,
     'driver' => 'pdo_mysql',
 ]);
 
 define('MARIA_DB_DEV_HOST_PORT', env('MARIA_DB_DEV_HOST_PORT'));
 
+require_once ROOT_PATH . '/utils/index.php';
 require_once ROOT_PATH . '/config/constants/roles.php';
 require_once ROOT_PATH . '/routes/api.php';

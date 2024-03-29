@@ -77,22 +77,22 @@ class Router
         }
     }
 
-    public function get(string $path, mixed $callback, string $name = null): Route
+    public function get(string $path, mixed $callback, ?string $name = null): Route
     {
         return $this->add($path, $callback, $name, 'GET');
     }
 
-    public function post(string $path, mixed $callback, string $name = null): Route
+    public function post(string $path, mixed $callback, ?string $name = null): Route
     {
         return $this->add($path, $callback, $name, 'POST');
     }
 
-    public function put(string $path, mixed $callback, string $name = null): Route
+    public function put(string $path, mixed $callback, ?string $name = null): Route
     {
         return $this->add($path, $callback, $name, 'PUT');
     }
 
-    public function delete(string $path, mixed $callback, string $name = null): Route
+    public function delete(string $path, mixed $callback, ?string $name = null): Route
     {
         return $this->add($path, $callback, $name, 'DELETE');
     }
@@ -100,11 +100,9 @@ class Router
     /**
      *  Handles the request by matching the requested URL with the registered routes.
      *
-     * @return mixed The result of the route's callback.
-     * @throws RouterException If no route matches the requested URL or if the request method is not supported.
-     *
+     * @return Response|string|null The result of the route's callback.
      */
-    public function run(): mixed
+    public function run(): Response|string|null
     {
         $request = $this->request;
 

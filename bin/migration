@@ -1,9 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-use Doctrine\ORM\ORMSetup;
-use Doctrine\ORM\EntityManager;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\Migrations\DependencyFactory;
 use Symfony\Component\Console\Application;
 use Doctrine\Migrations\Configuration\Migration\PhpFile;
@@ -19,16 +16,12 @@ require dirname(__DIR__) . '/public/index.php';
 $file = ROOT_PATH . '/config/migrations-config.php';
 $config = new PhpFile($file);
 
-$params = DB_PARAMS;
-$params['host'] = '127.0.0.1:' . MARIA_DB_DEV_HOST_PORT;
+$entityManager = cliDbConfig();
 
-$paths = [ROOT_PATH . '/src/Entity'];
-$ORMConfig = ORMSetup::createAttributeMetadataConfiguration($paths, IS_DEV_MODE);
-$connection = DriverManager::getConnection(array_merge($params, ['memory' => true]));
-
-$entityManager = new EntityManager($connection, $ORMConfig);
-
-$dependencyFactory = DependencyFactory::fromEntityManager($config, new ExistingEntityManager($entityManager));
+$dependencyFactory = DependencyFactory::fromEntityManager(
+    $config,
+    new ExistingEntityManager($entityManager)
+);
 
 $cli = new Application('Doctrine Migrations');
 $cli->addCommands([

@@ -4,13 +4,21 @@ declare(strict_types=1);
 
 namespace App\Http\Api\Controllers;
 
-use App\Core\Helpers\JSON;
+use App\Helpers\JSON;
 use App\Core\Http\Message\Request;
-use App\Core\Http\Security\Authentication;
+use App\Core\Security\Authentication;
+use App\Core\Security\PasswordHasher;
 use App\Core\Abstracts\AbstractController;
 
 class SecurityController extends AbstractController
 {
+    private PasswordHasher $passwordHasher;
+
+    public function __construct(PasswordHasher $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
+
     public function login(Request $request): void
     {
         $post = $this->getRequestData($request);
@@ -18,7 +26,7 @@ class SecurityController extends AbstractController
         $login = $post['login'];
         $password = $post['password'];
 
-        $data = Authentication::authenticate($login, $password, $this->getEntityManager());
+        $data = Authentication::authenticate($login, $password, $this->getEntityManager(), $this->passwordHasher);
 
         if (!$data) {
             JSON::sendError(['message' => 'Invalid credentials'], 401);

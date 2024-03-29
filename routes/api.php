@@ -32,6 +32,9 @@ $router->get(API_BASE_SLUG . '/', function () {
 $router->addGroupMiddleware($authRoutes, [new AuthMiddleware()]);
 $router->addGroupMiddleware($notAuthRoutes, [new NotAuthMiddleware()]);
 
+$router->get('/', function () {
+    echo '';
+});
 
 try {
     $router->run();

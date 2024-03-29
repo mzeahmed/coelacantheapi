@@ -5,18 +5,21 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Entity\User;
-use App\Core\Helpers\JSON;
+use App\Helpers\JSON;
 use Doctrine\ORM\EntityManager;
 use App\Repository\UsersRepository;
+use App\Core\Security\PasswordHasher;
 use Doctrine\ORM\Exception\ORMException;
 
 class UserService
 {
     private UsersRepository $repo;
+    private PasswordHasher $hasher;
 
-    public function __construct(UsersRepository $repo)
+    public function __construct(UsersRepository $repo, PasswordHasher $hasher)
     {
         $this->repo = $repo;
+        $this->hasher = $hasher;
     }
 
     public function getUsers(): array
@@ -33,7 +36,7 @@ class UserService
     {
         $user = new User();
 
-        $password = password_hash($password, PASSWORD_BCRYPT);
+        $password = $this->hasher->hash($password);
 
         $user->setLogin($login)
              ->setEmail($email)

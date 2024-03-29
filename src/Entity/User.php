@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
-#[Entity]
-#[Table(name: 'users')]
+#[ORM\Entity]
+#[ORM\Table(name: 'users')]
 class User
 {
     #[ORM\Id]
@@ -29,7 +27,7 @@ class User
     #[ORM\Column(type: Types::STRING, nullable: false)]
     private string $password;
 
-    #[ORM\OneToMany(targetEntity: Usermeta::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Usermeta::class, mappedBy: 'user', cascade: ['persist'])]
     private Collection $usermetas;
 
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE, nullable: false)]
@@ -42,7 +40,7 @@ class User
     private ?\DateTimeImmutable $lastLogin;
 
     #[ORM\Column(name: '2fa_token', type: Types::STRING, nullable: true)]
-    private ?string $two_fa_token = null;
+    private ?string $twoFaToken = null;
 
     #[ORM\ManyToMany(targetEntity: Role::class)]
     #[ORM\JoinTable(name: 'user_roles')]
@@ -193,12 +191,12 @@ class User
 
     public function getTwoFaToken(): ?string
     {
-        return $this->two_fa_token;
+        return $this->twoFaToken;
     }
 
-    public function setTwoFaToken(?string $two_fa_token): self
+    public function setTwoFaToken(?string $twoFaToken): self
     {
-        $this->two_fa_token = $two_fa_token;
+        $this->twoFaToken = $twoFaToken;
 
         return $this;
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Helpers;
+namespace App\Helpers;
 
 use App\Entity\User;
 use Firebase\JWT\Key;

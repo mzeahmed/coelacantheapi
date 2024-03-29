@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Api\Controllers;
 
 use App\Entity\User;
-use App\Core\Helpers\JSON;
-use App\Core\Helpers\Strings;
+use App\Helpers\JSON;
+use App\Helpers\Strings;
 use App\Services\UserService;
 use App\Core\Http\Message\Request;
 use Doctrine\ORM\Exception\ORMException;

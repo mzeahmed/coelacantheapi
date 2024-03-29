@@ -4,23 +4,19 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping as ORM;
 
-#[Entity]
-#[Table(name: 'capabilities')]
+#[ORM\Entity]
+#[ORM\Table(name: 'capabilities')]
 class Capability
 {
-    #[Id]
-    #[GeneratedValue(strategy: 'AUTO')]
-    #[Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: Types::INTEGER)]
     private int $id;
 
-    #[Column(type: Types::STRING, nullable: false)]
+    #[ORM\Column(type: Types::STRING, nullable: false)]
     private string $name;
 
     public function getId(): int

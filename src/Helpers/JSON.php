@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Helpers;
+namespace App\Helpers;
 
 class JSON
 {
@@ -12,6 +12,7 @@ class JSON
      * @param mixed $response Response to send
      * @param int|null $status HTTP status code
      * @param int $options JSON encoding options
+     *
      * @return void
      */
     public static function send(mixed $response, int $status = null, int $options = 0): void
@@ -34,6 +35,7 @@ class JSON
      * @param mixed|null $data Data to send
      * @param int $status HTTP status code
      * @param int $options
+     *
      * @return void
      */
     public static function sendSuccess(mixed $data = null, int $status = 200, int $options = 0): void
@@ -53,6 +55,7 @@ class JSON
      * @param mixed|null $data Data to send
      * @param int $status HTTP status code
      * @param int $options
+     *
      * @return void
      */
     public static function sendError(mixed $data = null, int $status = 400, int $options = 0): void

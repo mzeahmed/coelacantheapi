@@ -60,6 +60,11 @@ migration : ## Create a new migration | make migration n=name (generate, diff, m
 	@php ./bin/migration migrations:$(n)
 	@echo "$(YELLOW)Migration $(BLUE)$(n)$(NO_COLOR) created"
 
+fixture: ## Load fixtures | make fixtures
+	@echo "$(YELLOW)Loading fixtures$(NO_COLOR)"
+	@php ./bin/fixture
+	@echo "$(YELLOW)Fixtures loaded$(NO_COLOR)"
+
 clear-cache: ## Clear Doctrine cache
 	@echo "$(YELLOW)Clearing Doctrine cache$(NO_COLOR)"
 	@php ./bin/doctrine orm:clear-cache:metadata

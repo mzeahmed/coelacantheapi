@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Core\Helpers\JSON;
+use App\Helpers\JSON;
 use App\Core\Http\Message\Request;
 use App\Core\Interfaces\MiddlewareInterface;
 

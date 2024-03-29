@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Http\Security;
+namespace App\Core\Security;
 
 use App\Entity\User;
-use App\Core\Helpers\JWT;
-use App\Core\Helpers\JSON;
+use App\Helpers\JWT;
+use App\Helpers\JSON;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
 
 class Authentication
 {
-    public static function authenticate(string $username, string $password, EntityManager $manager): array|bool
+    public static function authenticate(string $username, string $password, EntityManager $manager, PasswordHasher $hasher): array|bool
     {
         $user = $manager->getRepository(User::class)->findOneBy(['login' => $username]);
 
@@ -20,7 +20,7 @@ class Authentication
             JSON::sendError(['message' => 'User not found'], 404);
         }
 
-        if (password_verify($password, $user->getPassword())) {
+        if ($hasher->verify($password, $user->getPassword())) {
             $token = JWT::generateToken($user);
 
             if ($token) {
