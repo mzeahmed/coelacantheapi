@@ -6,7 +6,7 @@ use App\Services\UserService;
 use PHPUnit\Framework\TestCase;
 use App\Core\Http\Message\Request;
 use Psr\Http\Message\UriInterface;
-use App\Http\Api\Controllers\UserController;
+use App\Http\Controllers\Api\UserController;
 
 class UsersControllerTest extends TestCase
 {

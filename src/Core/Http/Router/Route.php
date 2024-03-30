@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Http\Router;
 
 use DI\Container;
+use App\Helpers\JSON;
 use DI\NotFoundException;
 use DI\DependencyException;
 use App\Core\Http\Message\Request;
@@ -123,7 +124,7 @@ class Route
             try {
                 $controllerInstance = $this->container->get($controllerName);
             } catch (DependencyException|NotFoundException $e) {
-                return $e->getMessage();
+                JSON::sendError(['message' => 'Error creating controller instance => ' . $e->getMessage()], 500);
             }
 
             return call_user_func_array([$controllerInstance, $action], [$request]);
