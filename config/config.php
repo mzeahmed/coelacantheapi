@@ -54,5 +54,5 @@ define('DB_PARAMS', [
 define('MARIA_DB_DEV_HOST_PORT', env('MARIA_DB_DEV_HOST_PORT'));
 
 require_once ROOT_PATH . '/utils/index.php';
-require_once ROOT_PATH . '/config/constants/roles.php';
+require_once ROOT_PATH . '/config/constants/index.php';
 require_once ROOT_PATH . '/routes/api.php';

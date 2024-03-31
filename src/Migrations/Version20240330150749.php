@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240329201412 extends AbstractMigration
+final class Version20240330150749 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -23,8 +23,8 @@ final class Version20240329201412 extends AbstractMigration
         $this->addSql('CREATE TABLE capabilities (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE roles (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE role_capabilities (role_id INT NOT NULL, capability_id INT NOT NULL, INDEX IDX_896D4121D60322AC (role_id), INDEX IDX_896D412192043242 (capability_id), PRIMARY KEY(role_id, capability_id))');
-        $this->addSql('CREATE TABLE usermeta (id INT NOT NULL, meta_key VARCHAR(255) NOT NULL, meta_value VARCHAR(255) NOT NULL, user_id INT DEFAULT NULL, INDEX IDX_718F6C44A76ED395 (user_id), PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE users (id INT AUTO_INCREMENT NOT NULL, login VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, last_login DATETIME DEFAULT NULL, 2fa_token VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE usermeta (id INT AUTO_INCREMENT NOT NULL, meta_key VARCHAR(255) NOT NULL, meta_value VARCHAR(255) NOT NULL, user_id INT DEFAULT NULL, INDEX IDX_718F6C44A76ED395 (user_id), PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE users (id INT AUTO_INCREMENT NOT NULL, login VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, 2fa_token VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE user_roles (user_id INT NOT NULL, role_id INT NOT NULL, INDEX IDX_54FCD59FA76ED395 (user_id), INDEX IDX_54FCD59FD60322AC (role_id), PRIMARY KEY(user_id, role_id))');
         $this->addSql('ALTER TABLE role_capabilities ADD CONSTRAINT FK_896D4121D60322AC FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE role_capabilities ADD CONSTRAINT FK_896D412192043242 FOREIGN KEY (capability_id) REFERENCES capabilities (id) ON DELETE CASCADE');

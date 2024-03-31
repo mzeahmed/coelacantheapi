@@ -1,0 +1,260 @@
+@startuml
+' Tables classes definition
+class User {
+    - id : int
+    - login : string
+    - email : string
+    - password : string
+    - usermetas : Collection
+    - createdAt : \DateTimeImmutable
+    - updatedAt : ?\DateTimeImmutable
+    - twoFaToken : ?string
+    - roles : Collection
+    + __construct()
+    + getId() : int
+    + getLogin() : string
+    + setLogin(string login) : self
+    + getEmail() : string
+    + setEmail(email: string) : self
+    + getUsermetas() : Collection
+    + addUsermeta(Usermeta usermeta) : self
+    + removeUsermeta(Usermeta usermeta) : self
+    + getFirstName() : ?string
+    + setFirstName(?string firstName) : self
+    + getLastName() : ?string
+    + setLastName(?string lastName) : self
+    + getFullName() : string
+    + getBirthdate() : ?string
+    + setBirthdate(?\DateTimeImmutable birthdate) : self
+    + getAge() : ?int
+    + setPassword(string password) : self
+    + getPassword() : string
+    + getCreatedAt() : \DateTimeImmutable
+    + setCreatedAt(\DateTimeImmutable createdAt) : self
+    + getUpdatedAt() : ?\DateTimeImmutable
+    + setUpdatedAt(?\DateTimeImmutable updatedAt) : self
+    + getLastLogin() : ?string
+    + setLastLogin(?\DateTimeImmutable lastLogin) : self
+    + getTwoFaToken() : ?string
+    + setTwoFaToken(?string twoFaToken) : self
+    + getRoles() : Collection
+    + addRole(Role role) : self
+    + removeRole(Role role) : self
+    + userData() : array
+    - getMetaValueByKey(string key) : ?string
+    - setMetaValueByKey(string key, string value) : void
+}
+
+class UserMeta {
+    - id : int
+    - user : User
+    - metaKey : string
+    - metaValue : string
+
+    + getId() : int
+    + getUser() : User
+    + setUser(User user) : self
+    + getMetaKey() : string
+    + setMetaKey(string metaKey) : self
+    + getMetaValue() : string
+    + setMetaValue(string metaValue) : self
+}
+
+class Post {
+    - id : int
+    - user : User
+    - content : string
+    - createdAt : datetime
+
+    + getId() : int
+    + getUser() : User
+    + setUser(User user) : self
+    + getContent() : string
+    + setContent(string content) : self
+    + getCreatedAt() : datetime
+    + setCreatedAt(datetime createdAt) : self
+}
+
+class Comment {
+    - id : int
+    - post : Post
+    - user : User
+    - content : string
+    - createdAt : datetime
+
+    + getId() : int
+    + getPost() : Post
+    + setPost(Post post) : self
+    + getUser() : User
+    + setUser(User user) : self
+    + getContent() : string
+    + setContent(string content) : self
+    + getCreatedAt() : datetime
+    + setCreatedAt(datetime createdAt) : self
+}
+
+class Group {
+    - id : int
+    - name : string
+    - description : string
+    - slug : string
+    - creator : User
+    - createdAt : datetime
+    - updatedAt : datetime
+    - type : string
+
+    + getId() : int
+    + getName() : string
+    + setName(name: string) : self
+    + getDescription() : string
+    + setDescription(description: string) : self
+    + getSlug() : string
+    + setSlug(slug: string) : self
+    + getCreator() : User
+    + setCreator(creator: User) : self
+    + getCreatedAt() : datetime
+    + setCreatedAt(createdAt: datetime) : self
+    + getUpdatedAt() : datetime
+    + setUpdatedAt(updatedAt: datetime) : self
+    + getType() : string
+    + setType(type: string) : self
+}
+
+class GroupMember {
+    - id : int
+    - group : Group
+    - user : User
+    - inviter : User
+    - role : string
+    - createdAt : datetime
+    - updatedAt : datetime
+
+    + getId() : int
+    + getGroup() : Group
+    + setGroup(group: Group) : self
+    + getUser() : User
+    + setUser(user: User) : self
+    + getInviter() : User
+    + setInviter(inviter: User) : self
+    + getRole() : string
+    + setRole(role: string) : self
+    + getCreatedAt() : datetime
+    + setCreatedAt(createdAt: datetime) : self
+    + getUpdatedAt() : datetime
+    + setUpdatedAt(updatedAt: datetime) : self
+}
+
+class Message {
+    - id : int
+    - sender : User
+    - recipient : User
+    - content : string
+    - createdAt : datetime
+    - isRead : bool
+    - readAt : datetime
+
+    + getId() : int
+    + getSender() : User
+    + setSender(sender: User) : self
+    + getRecipient() : User
+    + setRecipient(recipient: User) : self
+    + getContent() : string
+    + setContent(content: string) : self
+    + getCreatedAt() : datetime
+    + setCreatedAt(createdAt: datetime) : self
+    + getIsRead() : bool
+    + setIsRead(isRead: bool) : self
+    + getReadAt() : datetime
+    + setReadAt(readAt: datetime) : self
+}
+
+class Hashtag {
+    - id : int
+    - name : string
+    - createdAt : datetime
+
+    + getId() : int
+    + getName() : string
+    + setName(name: string) : self
+    + getCreatedAt() : datetime
+    + setCreatedAt(createdAt: datetime) : self
+}
+
+class PostHashtag {
+    - id : int
+    - post : Post
+    - hashtag : Hashtag
+
+    + getId() : int
+    + getPost() : Post
+    + setPost(post: Post) : self
+    + getHashtag() : Hashtag
+    + setHashtag(hashtag: Hashtag) : self
+}
+
+class MessageHashtag {
+    - id : int
+    - messageId : int
+    - hashtag : Hashtag
+    - type : string
+
+    + getId() : int
+    + getMessageId() : int
+    + setMessageId(messageId: int) : self
+    + getHashtag() : Hashtag
+    + setHashtag(hashtag: Hashtag) : self
+    + getType() : string
+    + setType(type: string) : self
+}
+
+enum NotificationType {
+    LIKE
+    COMMENT
+    FOLLOW
+    MENTION
+    MESSAGE
+}
+
+class Notification {
+    - id : int
+    - user : User
+    - sourceUser : User
+    - message : string
+    - type : NotificationType
+    - sourceEntityId : int
+    - isRead : bool
+    - createdAt : datetime
+
+    + getId() : int
+    + getUser() : User
+    + setUser(User user) : self
+    + getSourceUser() : User
+    + setSourceUser(User sourceUser) : self
+    + getMessage() : string
+    + setMessage(string message) : self
+    + getType() : NotificationType
+    + setType(NotificationType type) : self
+    + getSourceEntityId() : int
+    + setSourceEntityId(int sourceEntityId) : self
+    + getIsRead() : bool
+    + setIsRead(bool isRead) : self
+    + getCreatedAt() : datetime
+    + setCreatedAt(datetime createdAt) : self
+}
+
+' Classes relationships
+
+User "1" --> "0..*" Post : Post
+Post "1" --> "0..*" Comment : Comment
+User "1" --> "0..*" Comment : Comment
+User "1" --> "0..*" GroupMember : GroupMember
+Group "1" --> "0..*" GroupMember : GroupMember
+User "1" --> "0..*" Message : Sender
+User "1" --> "0..*" Message : Recipient
+Post "1" --> "0..*" PostHashtag : PostHashtag
+Hashtag "1" --> "0..*" PostHashtag : PostHashtag
+Hashtag "1" --> "0..*" MessageHashtag : MessageHashtag
+User "1" --> "0..*" UserMeta : UserMeta
+User "1" --> "0..*" Notification : SentNotifications
+User "1" --> "0..*" Notification : ReceivedNotifications
+@enduml

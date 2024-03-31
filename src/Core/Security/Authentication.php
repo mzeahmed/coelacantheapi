@@ -25,8 +25,15 @@ class Authentication
 
             if ($token) {
                 $user->setLastLogin(new \DateTimeImmutable());
+
                 try {
                     $manager->persist($user);
+
+                    // Persist the meta last_login
+                    foreach ($user->getUsermetas() as $meta) {
+                        $manager->persist($meta);
+                    }
+
                     $manager->flush();
                 } catch (\Exception|ORMException $e) {
                     JSON::sendError(['message' => 'Error updating user => ' . $e->getMessage()], 500);

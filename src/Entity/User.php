@@ -6,8 +6,10 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Core\Database\Connector\DoctrineConnector;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
@@ -35,9 +37,6 @@ class User
 
     #[ORM\Column(name: 'updated_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
-
-    #[ORM\Column(name: 'last_login', type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $lastLogin;
 
     #[ORM\Column(name: '2fa_token', type: Types::STRING, nullable: true)]
     private ?string $twoFaToken = null;
@@ -110,12 +109,26 @@ class User
 
     public function getFirstName(): ?string
     {
-        return $this->getMetaValueByKey('firstname');
+        return $this->getMetaValueByKey(USERMETA_FIRST_NAME);
+    }
+
+    public function setFirstName(?string $firstName): self
+    {
+        $this->setMetaValueByKey(USERMETA_FIRST_NAME, $firstName);
+
+        return $this;
     }
 
     public function getLastName(): ?string
     {
-        return $this->getMetaValueByKey('lastname');
+        return $this->getMetaValueByKey(USERMETA_LAST_NAME);
+    }
+
+    public function setLastName(?string $lastName): self
+    {
+        $this->setMetaValueByKey(USERMETA_LAST_NAME, $lastName);
+
+        return $this;
     }
 
     public function getFullName(): string
@@ -125,7 +138,14 @@ class User
 
     public function getBirthdate(): ?string
     {
-        return $this->getMetaValueByKey('birthdate');
+        return $this->getMetaValueByKey(USERMETA_BIRTHDATE);
+    }
+
+    public function setBirthdate(?\DateTimeImmutable $birthdate): self
+    {
+        $this->setMetaValueByKey(USERMETA_BIRTHDATE, $birthdate?->format('Y-m-d H:i:s'));
+
+        return $this;
     }
 
     public function getAge(): ?int
@@ -138,7 +158,7 @@ class User
 
         $now = new \DateTimeImmutable();
 
-        return $now->diff(new \DateTime($birthdate))->y;
+        return $now->diff(new \DateTimeImmutable($birthdate))->y;
     }
 
     public function setPassword(string $password): self
@@ -177,14 +197,14 @@ class User
         return $this;
     }
 
-    public function getLastLogin(): ?\DateTimeImmutable
+    public function getLastLogin(): ?string
     {
-        return $this->lastLogin;
+        return $this->getMetaValueByKey(USERMETA_LAST_LOGIN);
     }
 
-    public function setLastLogin(?\DateTimeImmutable $lastLogin): ?self
+    public function setLastLogin(?\DateTimeImmutable $lastLogin): self
     {
-        $this->lastLogin = $lastLogin;
+        $this->setMetaValueByKey(USERMETA_LAST_LOGIN, $lastLogin?->format('Y-m-d H:i:s'));
 
         return $this;
     }
@@ -246,5 +266,30 @@ class User
         }
 
         return null;
+    }
+
+    private function setMetaValueByKey(string $key, string $value): void
+    {
+        $manager = DoctrineConnector::getEntityManager();
+        $usermeta = $manager
+            ->getRepository(Usermeta::class)
+            ->findOneBy(['user' => $this, 'metaKey' => $key]);
+
+        if ($usermeta) {
+            $usermeta->setMetaValue($value);
+            try {
+                $manager->persist($usermeta);
+                $manager->flush();
+            } catch (ORMException $e) {
+                echo $e->getMessage();
+            }
+        } else {
+            $usermeta = new Usermeta();
+            $usermeta
+                ->setUser($this)
+                ?->setMetaKey($key)
+                ->setMetaValue($value);
+            $this->addUsermeta($usermeta);
+        }
     }
 }
