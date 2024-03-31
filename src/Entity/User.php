@@ -48,12 +48,24 @@ class User
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author', cascade: ['persist'])]
     private Collection $posts;
 
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'author', cascade: ['persist'])]
+    private Collection $comments;
+
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'author', cascade: ['persist'])]
+    private Collection $receivedMessages;
+
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'recipient', cascade: ['persist'])]
+    private Collection $sentMessages;
+
     public function __construct()
     {
         $this->usermetas = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
-
         $this->roles = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->receivedMessages = new ArrayCollection();
+        $this->sentMessages = new ArrayCollection();
     }
 
     public function getId(): int
@@ -253,7 +265,7 @@ class User
     public function addPost(Post $post): self
     {
         if (!$this->posts->contains($post)) {
-            $this->posts[] = $post;
+            $this->posts->add($post);
             $post->setAuthor($this);
         }
 
@@ -265,6 +277,67 @@ class User
         $this->posts->removeElement($post);
 
         return $this;
+    }
+
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        $this->comments->removeElement($comment);
+
+        return $this;
+    }
+
+    public function getReceivedMessages(): Collection
+    {
+        return $this->receivedMessages;
+    }
+
+    public function removeReceivedMessage(Message $message): self
+    {
+        $this->receivedMessages->removeElement($message);
+
+        return $this;
+    }
+
+    public function getSentMessages(): Collection
+    {
+        return $this->sentMessages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->sentMessages->contains($message)) {
+            $this->sentMessages->add($message);
+            $message->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSentMessage(Message $message): self
+    {
+        $this->sentMessages->removeElement($message);
+
+        return $this;
+    }
+
+    public function getMessages(): Collection
+    {
+        return new ArrayCollection(array_merge($this->receivedMessages->toArray(), $this->sentMessages->toArray()));
     }
 
     public function userData(): array

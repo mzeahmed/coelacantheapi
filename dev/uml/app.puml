@@ -11,6 +11,9 @@ class User {
     - twoFaToken : ?string
     - roles : Collection
     - posts : Collection
+    - comments : Collection
+    - receivedMessages : Collection
+    - sentMessages : Collection
 
     + __construct()
     + getId() : int
@@ -45,6 +48,15 @@ class User {
     + getPosts() : Collection
     + addPost(Post post) : self
     + removePost(Post post) : self
+    + getComments() : Collection
+    + addComment(Comment comment) : self
+    + removeComment(Comment comment) : self
+    + getReceivedMessages() : Collection
+    + removeReceivedMessage(Message message) : self
+    + getSentMessages() : Collection
+    + addMessage(Message message) : self
+    + removeSentMessage(Message message) : self
+    + getMessages() : Collection
     + userData() : array
     - getMetaValueByKey(string key) : ?string
     - setMetaValueByKey(string key, string value) : void
