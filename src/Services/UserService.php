@@ -7,16 +7,16 @@ namespace App\Services;
 use App\Entity\User;
 use App\Helpers\JSON;
 use Doctrine\ORM\EntityManager;
-use App\Repository\UsersRepository;
+use App\Repository\UserRepository;
 use App\Core\Security\PasswordHasher;
 use Doctrine\ORM\Exception\ORMException;
 
 class UserService
 {
-    private UsersRepository $repo;
+    private UserRepository $repo;
     private PasswordHasher $hasher;
 
-    public function __construct(UsersRepository $repo, PasswordHasher $hasher)
+    public function __construct(UserRepository $repo, PasswordHasher $hasher)
     {
         $this->repo = $repo;
         $this->hasher = $hasher;

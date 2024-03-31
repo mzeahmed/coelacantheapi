@@ -1,13 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-use App\DataFixtures\appFixtures;
+use App\DataFixtures\AppFixtures;
 
 require dirname(__DIR__) . '/public/index.php';
 
 $entityManager = cliDbConfig();
 
-$fixture = new appFixtures();
+$fixture = new AppFixtures();
 $fixture->load($entityManager);
 
 echo "Fixture loaded successfully\n";

@@ -11,7 +11,7 @@ use App\Entity\Usermeta;
 use App\Core\Security\PasswordHasher;
 use Doctrine\Persistence\ObjectManager;
 
-class appFixtures
+class UserFixtures
 {
     private PasswordHasher $hasher;
     private Generator $faker;
@@ -23,11 +23,6 @@ class appFixtures
     }
 
     public function load(ObjectManager $manager): void
-    {
-        $this->loadUsers($manager);
-    }
-
-    private function loadUsers(ObjectManager $manager): void
     {
         foreach ($this->getUserData() as [$login, $email, $password, $twoFaToken]) {
             $firstname = $this->faker->firstName;
