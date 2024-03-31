@@ -45,6 +45,9 @@ class User
     #[ORM\JoinTable(name: 'user_roles')]
     private Collection $roles;
 
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author', cascade: ['persist'])]
+    private Collection $posts;
+
     public function __construct()
     {
         $this->usermetas = new ArrayCollection();
@@ -238,6 +241,28 @@ class User
     public function removeRole(Role $role): self
     {
         $this->roles->removeElement($role);
+
+        return $this;
+    }
+
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        $this->posts->removeElement($post);
 
         return $this;
     }

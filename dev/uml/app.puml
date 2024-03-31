@@ -10,6 +10,8 @@ class User {
     - updatedAt : ?\DateTimeImmutable
     - twoFaToken : ?string
     - roles : Collection
+    - posts : Collection
+
     + __construct()
     + getId() : int
     + getLogin() : string
@@ -40,6 +42,9 @@ class User {
     + getRoles() : Collection
     + addRole(Role role) : self
     + removeRole(Role role) : self
+    + getPosts() : Collection
+    + addPost(Post post) : self
+    + removePost(Post post) : self
     + userData() : array
     - getMetaValueByKey(string key) : ?string
     - setMetaValueByKey(string key, string value) : void
@@ -62,17 +67,24 @@ class UserMeta {
 
 class Post {
     - id : int
-    - user : User
+    - author : User
     - content : string
     - createdAt : datetime
+    - updatedAt : datetime
+    - comments : Collection
 
     + getId() : int
-    + getUser() : User
-    + setUser(User user) : self
+    + getAuthor() : User
+    + setAuthor(User author) : self
     + getContent() : string
     + setContent(string content) : self
     + getCreatedAt() : datetime
     + setCreatedAt(datetime createdAt) : self
+    + getUpdatedAt() : datetime
+    + setUpdatedAt(datetime updatedAt) : self
+    + getComments() : Collection
+    + addComment(Comment comment) : self
+    + removeComment(Comment comment) : self
 }
 
 class Comment {
