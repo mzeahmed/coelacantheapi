@@ -7,7 +7,7 @@ require dirname(__DIR__) . '/public/index.php';
 
 $entityManager = cliDbConfig();
 
-$fixture = new AppFixtures();
-$fixture->load($entityManager);
+$fixture = new AppFixtures($entityManager);
+$fixture->load();
 
 echo "Fixture loaded successfully\n";

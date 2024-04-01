@@ -4,25 +4,23 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use Faker\Factory;
 use Faker\Generator;
 use App\Entity\User;
 use App\Entity\Usermeta;
-use App\Core\Security\PasswordHasher;
 use Doctrine\Persistence\ObjectManager;
 
 class UserFixtures
 {
-    private PasswordHasher $hasher;
+    private ObjectManager $manager;
     private Generator $faker;
 
-    public function __construct()
+    public function __construct(ObjectManager $manager, Generator $faker)
     {
-        $this->hasher = new PasswordHasher();
-        $this->faker = Factory::create();
+        $this->manager = $manager;
+        $this->faker = $faker;
     }
 
-    public function load(ObjectManager $manager): void
+    public function load($hasher): void
     {
         foreach ($this->getUserData() as [$login, $email, $password, $twoFaToken]) {
             $firstname = $this->faker->firstName;
@@ -40,7 +38,7 @@ class UserFixtures
             $user = new User();
             $user->setLogin($login);
             $user->setEmail($email);
-            $user->setPassword($this->hasher->hash($password));
+            $user->setPassword($hasher->hash($password));
             $user->setTwoFaToken($twoFaToken);
             $user->setCreatedAt(new \DateTimeImmutable());
 
@@ -65,10 +63,10 @@ class UserFixtures
                 ->setMetaValue($this->faker->date('Y-m-d H:i:s'));
             $user->addUsermeta($usermeta);
 
-            $manager->persist($user);
+            $this->manager->persist($user);
         }
 
-        $manager->flush();
+        $this->manager->flush();
     }
 
     private function getUserData(): array

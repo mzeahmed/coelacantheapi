@@ -11,16 +11,18 @@ use Doctrine\Persistence\ObjectManager;
 
 class PostFixtures
 {
+    private ObjectManager $manager;
     private Generator $faker;
 
-    public function __construct()
+    public function __construct(ObjectManager $manager, Generator $faker)
     {
-        $this->faker = new Generator();
+        $this->manager = $manager;
+        $this->faker = $faker;
     }
 
-    public function load(ObjectManager $manager): void
+    public function load(): void
     {
-        $users = $manager->getRepository(User::class)->findAll();
+        $users = $this->manager->getRepository(User::class)->findAll();
 
         if (!$users) {
             throw new \RuntimeException('No users found. Please run UserFixtures before running PostFixtures.');
@@ -32,10 +34,10 @@ class PostFixtures
             $post->setCreatedAt(new \DateTimeImmutable($createdAt));
             $post->setAuthor($users[array_rand($users)]);
 
-            $manager->persist($post);
+            $this->manager->persist($post);
         }
 
-        $manager->flush();
+        $this->manager->flush();
     }
 
     private function getPostData(): array
@@ -58,7 +60,7 @@ class PostFixtures
 
         for ($i = 0; $i < 500; $i ++) {
             $posts[] = [
-                'content' => $this->faker->sentences(300),
+                'content' => $this->faker->sentence(300),
                 'createdAt' => $this->faker->dateTimeThisYear()->format('Y-m-d H:i:s')
             ];
         }
