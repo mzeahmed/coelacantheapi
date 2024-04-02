@@ -104,7 +104,7 @@ class Route
 
         array_shift($matches);
 
-        $this->matches = $matches;
+        $this->matches = array_combine(array_keys($this->params), $matches);
 
         return true;
     }
@@ -118,6 +118,10 @@ class Route
      */
     public function call(?Request $request = null): mixed
     {
+        if (null !== $request) {
+            $request = $this->withRequest($request);
+        }
+
         if (is_string($this->callback)) {
             $controllerAction = explode('@', $this->callback);
             [$controllerName, $action] = $controllerAction;
@@ -165,5 +169,22 @@ class Route
         }
 
         return $path;
+    }
+
+    /**
+     * Adds the route's attributes to the request.
+     *
+     * @param Request $request The request object.
+     *
+     * @return Request The request object with the attributes.
+     */
+    public function withRequest(Request $request): Request
+    {
+        $attributes = [];
+        foreach ($this->matches as $key => $value) {
+            $attributes[$key] = $value;
+        }
+
+        return $request->withAttributes($attributes);
     }
 }

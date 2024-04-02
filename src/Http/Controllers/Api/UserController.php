@@ -40,10 +40,7 @@ class UserController extends AbstractController
 
     public function show(Request $request): void
     {
-        $uri = $request->getUri();
-        $path = $uri->getPath();
-
-        $id = Strings::extractIdFromUrl('user', $path);
+        $id = (int) $request->getAttribute('id');
 
         $user = $this->userService->getUser((int) $id);
 

@@ -16,6 +16,7 @@ class Request implements RequestInterface
     private array $headers;
     private StreamInterface $body;
     private string $protocolVersion = '1.1';
+    private array $attributes = [];
 
     public function __construct(string $method, UriInterface $uri, array $headers, StreamInterface $body)
     {
@@ -147,6 +148,24 @@ class Request implements RequestInterface
         }
 
         return $new;
+    }
+
+    public function withAttributes(array $attributes): self
+    {
+        $new = clone $this;
+        $new->attributes = $attributes;
+
+        return $new;
+    }
+
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function getAttribute(string $name, $default = null)
+    {
+        return $this->attributes[$name] ?? $default;
     }
 
     private function updateHostFromUri(): void
