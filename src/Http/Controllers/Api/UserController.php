@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Entity\User;
 use App\Helpers\JSON;
-use App\Helpers\Strings;
 use App\Services\UserService;
 use App\Core\Http\Message\Request;
 use Doctrine\ORM\Exception\ORMException;
@@ -42,7 +41,7 @@ class UserController extends AbstractController
     {
         $id = (int) $request->getAttribute('id');
 
-        $user = $this->userService->getUser((int) $id);
+        $user = $this->userService->getUser($id);
 
         if (!$user) {
             JSON::sendError(['message' => 'User not found'], 404);
@@ -81,10 +80,7 @@ class UserController extends AbstractController
 
     public function update(Request $request): void
     {
-        $uri = $request->getUri();
-        $path = $uri->getPath();
-
-        $id = Strings::extractIdFromUrl('update', $path, false);
+        $id = (int) $request->getAttribute('id');
 
         $data = $this->getRequestData($request);
 
@@ -95,12 +91,9 @@ class UserController extends AbstractController
 
     public function delete(Request $request): void
     {
-        $uri = $request->getUri();
-        $path = $uri->getPath();
+        $id = (int) $request->getAttribute('id');
 
-        $id = Strings::extractIdFromUrl('delete', $path, false);
-
-        $user = $this->userService->getUser((int) $id);
+        $user = $this->userService->getUser($id);
 
         if (!$user) {
             JSON::sendError(['message' => 'User not found'], 404);
