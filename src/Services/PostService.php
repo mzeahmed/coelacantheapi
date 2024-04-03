@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Helpers\Repository;
 use App\Repository\PostRepository;
 
 class PostService
@@ -18,6 +19,11 @@ class PostService
     public function getPosts(): array
     {
         return $this->repository->findAll();
+    }
+
+    public function getPaginatedUsers(int $page, int $limit): array
+    {
+        return Repository::findPaginatedObject(PostRepository::class, $page, $limit);
     }
 
     public function getPost(int $id): array

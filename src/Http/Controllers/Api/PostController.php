@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\JSON;
 use App\Services\PostService;
+use App\Core\Http\Message\Request;
 use App\Core\Abstracts\AbstractController;
 
 class PostController extends AbstractController
@@ -17,12 +18,13 @@ class PostController extends AbstractController
         $this->service = $postService;
     }
 
-    public function index(): void
+    public function index(Request $request): void
     {
-        $posts = $this->service->getPosts();
+        $page = (int) $request->getAttribute('page');
+        $posts = $this->service->getPaginatedUsers($page, 7);
 
         if (empty($posts)) {
-            JSON::sendError(['message' => 'No posts found'], 404);
+            JSON::sendError(['message' => 'No posts found !'], 404);
         }
 
         $data = [];

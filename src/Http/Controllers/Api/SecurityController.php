@@ -29,7 +29,7 @@ class SecurityController extends AbstractController
         $data = Authentication::authenticate($login, $password, $this->getEntityManager(), $this->passwordHasher);
 
         if (!$data) {
-            JSON::sendError(['message' => 'Invalid credentials'], 401);
+            JSON::sendError(['message' => 'Invalid credentials !'], 401);
         }
 
         JSON::sendSuccess(['json' => $data]);
@@ -40,15 +40,15 @@ class SecurityController extends AbstractController
         $headers = $request->getHeaders();
 
         if (empty($headers)) {
-            JSON::sendError(['message' => 'The headers are empty'], 500);
+            JSON::sendError(['message' => 'The headers are empty !'], 500);
         }
 
         $bearer = $headers['Authorization'] ?? '';
 
         if ($bearer) {
-            JSON::sendSuccess(['message' => 'User successfully logged out', 'token' => '']);
+            JSON::sendSuccess(['message' => 'User successfully logged out !', 'token' => '']);
         }
 
-        JSON::sendError(['message' => 'You are not authenticated'], 401);
+        JSON::sendError(['message' => 'You are not authenticated !'], 401);
     }
 }

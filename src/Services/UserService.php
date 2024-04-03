@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Entity\User;
 use App\Helpers\JSON;
+use App\Helpers\Repository;
 use Doctrine\ORM\EntityManager;
 use App\Repository\UserRepository;
 use App\Core\Security\PasswordHasher;
@@ -25,6 +26,11 @@ class UserService
     public function getUsers(): array
     {
         return $this->repo->findAll();
+    }
+
+    public function getPaginatedUsers(int $page, int $limit): array
+    {
+        return Repository::findPaginatedObject(UserRepository::class, $page, $limit);
     }
 
     public function getUser(int $id): ?User

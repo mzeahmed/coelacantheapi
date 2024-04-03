@@ -20,12 +20,13 @@ class UserController extends AbstractController
         $this->userService = $userService;
     }
 
-    public function index(): void
+    public function index(Request $request): void
     {
-        $users = $this->userService->getUsers();
+        $page = (int) $request->getAttribute('page');
+        $users = $this->userService->getPaginatedUsers($page, 7);
 
         if (!$users) {
-            JSON::sendError(['message' => 'No users found'], 404);
+            JSON::sendError(['message' => 'No users found !'], 404);
         }
 
         $data = [];
@@ -44,7 +45,7 @@ class UserController extends AbstractController
         $user = $this->userService->getUser($id);
 
         if (!$user) {
-            JSON::sendError(['message' => 'User not found'], 404);
+            JSON::sendError(['message' => 'User not found !'], 404);
         }
 
         JSON::sendSuccess($user->userData());
@@ -62,11 +63,11 @@ class UserController extends AbstractController
         $emailExists = $this->getEntityManager()->getRepository(User::class)->findOneBy(['email' => $email]);
 
         if ($loginExists) {
-            JSON::sendError(['message' => sprintf('Login %s is already in use', $login)], 500);
+            JSON::sendError(['message' => sprintf('Login %s is already in use !', $login)], 500);
         }
 
         if ($emailExists) {
-            JSON::sendError(['message' => sprintf('Email %s is already in use', $email)], 500);
+            JSON::sendError(['message' => sprintf('Email %s is already in use !', $email)], 500);
         }
 
         $user = $this->userService->createUser($login, $email, $password, $this->getEntityManager());
@@ -75,7 +76,7 @@ class UserController extends AbstractController
             JSON::sendError(['message' => 'Error creating user'], 500);
         }
 
-        JSON::sendSuccess(['message' => sprintf('User %s created successfully', $login)]);
+        JSON::sendSuccess(['message' => sprintf('User %s created successfully !', $login)]);
     }
 
     public function update(Request $request): void
@@ -86,7 +87,7 @@ class UserController extends AbstractController
 
         $this->userService->updateUser($id, $data, $this->getEntityManager());
 
-        JSON::sendSuccess(['message' => 'User updated successfully']);
+        JSON::sendSuccess(['message' => 'User updated successfully !']);
     }
 
     public function delete(Request $request): void
@@ -96,7 +97,7 @@ class UserController extends AbstractController
         $user = $this->userService->getUser($id);
 
         if (!$user) {
-            JSON::sendError(['message' => 'User not found'], 404);
+            JSON::sendError(['message' => 'User not found !'], 404);
         }
 
         try {
@@ -106,6 +107,6 @@ class UserController extends AbstractController
             JSON::sendError(['message' => 'Error deleting user => ' . $e->getMessage()], 500);
         }
 
-        JSON::sendSuccess(['message' => 'User deleted successfully']);
+        JSON::sendSuccess(['message' => 'User deleted successfully !']);
     }
 }
