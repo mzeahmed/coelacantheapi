@@ -55,12 +55,18 @@ class Route
      * Adds a parameter to the route.
      *
      * @param string $param The parameter to add.
-     * @param string $regex The regular expression to match against the parameter.
+     * @param bool $isNumber Whether the parameter is a number or not.
      *
      * @return $this
      */
-    public function with(string $param, string $regex): self
+    public function addParam(string $param, bool $isNumber = true): self
     {
+        if ($isNumber) {
+            $regex = '[0-9]+';
+        } else {
+            $regex = '[a-zA-Z]+';
+        }
+
         $this->params[$param] = str_replace('(', '(?:', $regex);
 
         return $this;
