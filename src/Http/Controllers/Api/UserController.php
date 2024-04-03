@@ -8,16 +8,19 @@ use App\Entity\User;
 use App\Helpers\JSON;
 use App\Services\UserService;
 use App\Core\Http\Message\Request;
+use App\Core\Serializer\Serializer;
 use Doctrine\ORM\Exception\ORMException;
 use App\Core\Abstracts\AbstractController;
 
 class UserController extends AbstractController
 {
     private UserService $userService;
+    private Serializer $serializer;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, Serializer $serializer)
     {
         $this->userService = $userService;
+        $this->serializer = $serializer;
     }
 
     public function index(Request $request): void
@@ -25,17 +28,14 @@ class UserController extends AbstractController
         $page = (int) $request->getAttribute('page');
         $users = $this->userService->getPaginatedUsers($page, 7);
 
+        $this->serializer->setExcludedProperties(['password']);
+        $serializedUsers = $this->serializer->serialize($users);
+
         if (!$users) {
             JSON::sendError(['message' => 'No users found !'], 404);
         }
 
-        $data = [];
-
-        foreach ($users as $user) {
-            $data[] = $user->userData();
-        }
-
-        JSON::sendSuccess($data);
+        JSON::sendSuccess($serializedUsers);
     }
 
     public function show(Request $request): void
