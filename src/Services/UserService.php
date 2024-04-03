@@ -30,7 +30,7 @@ class UserService
 
     public function getPaginatedUsers(int $page, int $limit): array
     {
-        return Repository::findPaginatedObject(UserRepository::class, $page, $limit);
+        return Repository::findPaginatedObject(User::class, $page, $limit);
     }
 
     public function getUser(int $id): ?User

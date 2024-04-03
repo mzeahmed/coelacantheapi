@@ -8,10 +8,10 @@ use App\Core\Database\Connector\DoctrineConnector;
 
 class Repository
 {
-    public static function findPaginatedObject(string $repository, int $page, int $limit): array
+    public static function findPaginatedObject(string $entity, int $page, int $limit): array
     {
         $manager = DoctrineConnector::getEntityManager();
-        $ropository = $manager->getRepository($repository);
+        $ropository = $manager->getRepository($entity);
 
         $query = $ropository->createQueryBuilder('u')
                             ->setFirstResult(($page - 1) * $limit)
