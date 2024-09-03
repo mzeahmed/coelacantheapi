@@ -23,7 +23,7 @@ abstract class AbstractController
         if (empty($contents)) {
             throw new \RuntimeException('Error : The request body is empty');
         }
-        
+
         try {
             $data = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
         } catch (\Exception $e) {

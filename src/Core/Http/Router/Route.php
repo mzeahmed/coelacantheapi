@@ -13,7 +13,6 @@ use App\Core\Interfaces\MiddlewareInterface;
 
 class Route
 {
-
     /**
      * @var string $path The path to match against the URL.
      */
@@ -133,7 +132,7 @@ class Route
             [$controllerName, $action] = $controllerAction;
             try {
                 $controllerInstance = $this->container->get($controllerName);
-            } catch (DependencyException|NotFoundException $e) {
+            } catch (DependencyException | NotFoundException $e) {
                 JSON::sendError(['message' => 'Error creating controller instance => ' . $e->getMessage()], 500);
             }
 

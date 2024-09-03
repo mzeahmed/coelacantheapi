@@ -27,7 +27,7 @@ class PostService
         return Repository::findPaginatedObject(Post::class, $page, $limit);
     }
 
-    public function getPost(int $id): array
+    public function getPost(int $id): ?array
     {
         return $this->repository->findOneBy(['id' => $id]);
     }

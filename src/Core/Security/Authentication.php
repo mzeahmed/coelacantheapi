@@ -35,7 +35,7 @@ class Authentication
                     }
 
                     $manager->flush();
-                } catch (\Exception|ORMException $e) {
+                } catch (\Exception | ORMException $e) {
                     JSON::sendError(['message' => 'Error updating user => ' . $e->getMessage()], 500);
                 }
 

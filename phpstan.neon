@@ -1,0 +1,10 @@
+parameters:
+    level: 5
+    paths:
+        - bin/
+        - config/
+        - public/
+        - routes/
+        - src/
+    excludePaths:
+    ignoreErrors:

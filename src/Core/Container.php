@@ -31,7 +31,7 @@ class Container
     {
         try {
             return self::$container->get($class);
-        } catch (DependencyException|NotFoundException $e) {
+        } catch (DependencyException | NotFoundException $e) {
             die($e->getMessage());
         }
     }

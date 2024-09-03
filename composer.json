@@ -1,5 +1,7 @@
 {
   "name": "mzeahmed/coelacantheapi",
+  "description": "",
+  "license": "GPL-2.0-or-later",
   "autoload": {
     "psr-4": {
       "App\\": "src/"
@@ -23,11 +25,21 @@
   },
   "require-dev": {
     "fakerphp/faker": "^1.23",
+    "phpro/grumphp": "^2.5",
+    "phpstan/phpstan": "^1.10",
     "phpunit/phpunit": "^11.0",
     "roave/security-advisories": "dev-latest",
+    "squizlabs/php_codesniffer": "^3.9",
     "symfony/var-dumper": "^7.0"
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "phpro/grumphp": true
+    }
+  },
+  "scripts": {
+    "phpcs": "phpcs",
+    "phpcbf": "phpcbf"
   }
 }

@@ -76,3 +76,21 @@ phpunit: ## Run PHPUnit tests
 	@echo "$(YELLOW)Running PHPUnit tests$(NO_COLOR)"
 	@php ./vendor/bin/phpunit
 	@echo "$(YELLOW)PHPUnit tests done$(NO_COLOR)"
+
+stan: ## Lance PHPStan
+	@echo "$(GREEN)Lancement de PHPStan...$(NO_COLOR)"
+	vendor/bin/phpstan analyse
+	@echo "$(GREEN)PHPStan terminé$(NO_COLOR)"
+
+cs: ## Lance php CondeSniffer en mode check
+	@echo "$(YELLOW)Lancement de php CodeSniffer...$(NO_COLOR)"
+	composer run phpcs
+
+cbf: ## Lance php CondeSniffer en mode check avec correction
+	@echo "$(YELLOW)Lancement de php CodeSniffer avec correction...$(NO_COLOR)"
+	composer run phpcbf
+
+g: ## Lancement de grumphp
+	@echo "$(YELLOW)Lancement de GrumPHP...$(NO_COLOR)"
+	php ./vendor/bin/grumphp run
+	@echo "$(YELLOW)GrumPHP terminé$(NO_COLOR)"

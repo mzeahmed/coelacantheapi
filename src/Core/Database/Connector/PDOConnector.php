@@ -18,7 +18,9 @@ class PDOConnector
 
         try {
             $this->connection = new \PDO(
-                "mysql:host=$host;port=$port;charset=utf8mb4;dbname=$dbname", $user, $password
+                "mysql:host=$host;port=$port;charset=utf8mb4;dbname=$dbname",
+                $user,
+                $password
             );
             $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {

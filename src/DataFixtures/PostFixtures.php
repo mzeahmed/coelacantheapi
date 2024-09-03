@@ -58,7 +58,7 @@ class PostFixtures
     {
         $posts = [];
 
-        for ($i = 0; $i < 500; $i ++) {
+        for ($i = 0; $i < 500; $i++) {
             $posts[] = [
                 'content' => $this->faker->sentence(300),
                 'createdAt' => $this->faker->dateTimeThisYear()->format('Y-m-d H:i:s')

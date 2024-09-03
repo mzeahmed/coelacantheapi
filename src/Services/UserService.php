@@ -51,7 +51,7 @@ class UserService
         try {
             $manager->persist($user);
             $manager->flush();
-        } catch (\Exception|ORMException $e) {
+        } catch (\Exception | ORMException $e) {
             JSON::sendError(['message' => 'Error creating user => ' . $e->getMessage()], 500);
         }
 
@@ -89,7 +89,7 @@ class UserService
         try {
             $manager->persist($user);
             $manager->flush();
-        } catch (\Exception|ORMException $e) {
+        } catch (\Exception | ORMException $e) {
             JSON::sendError(['message' => 'Error updating user => ' . $e->getMessage()], 500);
         }
 

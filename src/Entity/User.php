@@ -114,8 +114,10 @@ class User
 
     public function removeUsermeta(Usermeta $usermeta): self
     {
-        if ($this->usermetas->removeElement($usermeta)
-            && $usermeta->getUser() === $this) {
+        if (
+            $this->usermetas->removeElement($usermeta)
+            && $usermeta->getUser() === $this
+        ) {
             $usermeta->setUser(null);
         }
 
